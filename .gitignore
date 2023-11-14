@@ -4,3 +4,6 @@ Debug
 Release
 STM32F103RCTX_FLASH.ld
 *.pdf
+Drivers/CMSIS
+*Debug.cfg
+*Debug.launch
