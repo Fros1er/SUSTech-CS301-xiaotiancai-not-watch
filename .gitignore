@@ -1,0 +1,6 @@
+.settings
+.vscode
+Debug
+Release
+STM32F103RCTX_FLASH.ld
+*.pdf
