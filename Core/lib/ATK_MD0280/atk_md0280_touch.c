@@ -23,6 +23,7 @@
 #if (ATK_MD0280_USING_TOUCH != 0)
 
 #include "atk_md0280_touch_spi.h"
+#include "eeprom.h"
 #include <stdlib.h>
 
 /* 获取X/Y坐标ADC值的命令 */
@@ -146,13 +147,7 @@ static uint16_t atk_md0280_touch_get_adc2(uint8_t cmd)
  */
 static void atk_md0280_touch_draw_touch_point(uint16_t x, uint16_t y, uint16_t color)
 {
-    atk_md0280_draw_line(x - 12, y, x + 13, y, color);
-    atk_md0280_draw_line(x, y - 12, x, y + 13, color);
-    atk_md0280_draw_point(x + 1, y + 1, color);
-    atk_md0280_draw_point(x - 1, y + 1, color);
-    atk_md0280_draw_point(x + 1, y - 1, color);
-    atk_md0280_draw_point(x - 1, y - 1, color);
-    atk_md0280_draw_circle(x, y, 6, color);
+    atk_md0280_fill(x - 5, y - 5, x + 5, y + 5, color);
 }
 
 /**
@@ -172,13 +167,6 @@ static void atk_md0280_touch_calibration(void)
     double x_fac, y_fac;
     
     atk_md0280_clear(ATK_MD0280_WHITE);
-    atk_md0280_show_string( 40,
-                            40,
-                            ATK_MD0280_LCD_WIDTH - 80,
-                            ATK_MD0280_LCD_HEIGHT - 80,
-                            "Please use the stylus click the cross on the screen.The cross will always move until the screen adjustment is completed.",
-                            ATK_MD0280_LCD_FONT_16,
-                            ATK_MD0280_RED);
     
     while (1)
     {
@@ -247,15 +235,10 @@ static void atk_md0280_touch_calibration(void)
                     
                     g_atk_md0280_touch_sta.center.x = point[4].x;
                     g_atk_md0280_touch_sta.center.y = point[4].y;
+
+                    eeprom_save_touch_calib(&g_atk_md0280_touch_sta);
                     
-                    atk_md0280_clear(ATK_MD0280_WHITE);
-                    atk_md0280_show_string( 30,
-                                            100,
-                                            atk_md0280_get_lcd_width(),
-                                            atk_md0280_get_lcd_height(),
-                                            "Touch Screen Adjust OK!",
-                                            ATK_MD0280_LCD_FONT_16,
-                                            ATK_MD0280_BLUE);
+                    atk_md0280_clear(ATK_MD0280_GREEN);
                     HAL_Delay(1000);
                     atk_md0280_clear(ATK_MD0280_WHITE);
                     
@@ -280,7 +263,10 @@ void atk_md0280_touch_init(void)
 {
     atk_md0280_touch_hw_init();
     atk_md0280_touch_spi_init();
-    atk_md0280_touch_calibration();
+
+    if (eeprom_load_touch_calib(&g_atk_md0280_touch_sta)) {
+        atk_md0280_touch_calibration();
+    }
 }
 
 /**

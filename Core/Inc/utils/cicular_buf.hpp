@@ -12,8 +12,8 @@ class CicularBuf {
     }
 
     void push(const T &t) {
-        len_ = (len_ + 1) % SIZE;
         buf_[len_] = t;
+        len_ = (len_ + 1) % SIZE;
     }
 
     T &now() {

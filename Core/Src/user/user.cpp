@@ -7,6 +7,7 @@
 #include "atk_md0280.h"
 #include "button.hpp"
 #include "dwt_delay.h"
+#include "eeprom.h"
 #include "led.hpp"
 #include "lv_port_disp.h"
 #include "lv_port_indev.h"
@@ -21,6 +22,7 @@ void init() {
     button_init();
     uart_init();
     DWT_Delay_Init();
+    eeprom_init();
     if (atk_md0280_init() != 0) {
         led_writepin(0, LED_ON);
         led_writepin(1, LED_ON);
@@ -45,21 +47,17 @@ void tick() {
 void tim6_cb() {
 }
 
-template<>
+template <>
 void button_cb<key_0>() {
-
 }
 
-template<>
+template <>
 void button_cb<key_1>() {
-    
 }
 
-template<>
+template <>
 void button_cb<key_wakeup>() {
-    
 }
 
 void uart_receive_cb(uint16_t size) {
 }
-

@@ -149,17 +149,10 @@ uint8_t atk_md0280_set_disp_dir(atk_md0280_lcd_disp_dir_t disp_dir);            
 atk_md0280_lcd_scan_dir_t atk_md0280_get_scan_dir(void);                                                                                              /* 获取ATK-MD0280模块LCD扫描方向 */
 atk_md0280_lcd_disp_dir_t atk_md0280_get_disp_dir(void);                                                                                              /* 获取ATK-MD0280模块LCD显示方向 */
 void atk_md0280_fill(uint16_t xs, uint16_t ys, uint16_t xe, uint16_t ye, uint16_t color);                                                             /* ATK-MD0280模块LCD区域填充 */
+void atk_md0280_fill_area(uint16_t xs, uint16_t ys, uint16_t xe, uint16_t ye, uint16_t *color);
 void atk_md0280_clear(uint16_t color);                                                                                                                /* ATK-MD0280模块LCD清屏 */
 void atk_md0280_draw_point(uint16_t x, uint16_t y, uint16_t color);                                                                                   /* ATK-MD0280模块LCD画点 */
-uint16_t atk_md0280_read_point(uint16_t x, uint16_t y);                                                                                               /* ATK-MD0280模块LCD读点 */
-void atk_md0280_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);                                                        /* ATK-MD0280模块LCD画线段 */
-void atk_md0280_draw_rect(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);                                                        /* ATK-MD0280模块LCD画矩形框 */
-void atk_md0280_draw_circle(uint16_t x, uint16_t y, uint16_t r, uint16_t color);                                                                      /* ATK-MD0280模块LCD画圆形框 */
-void atk_md0280_show_char(uint16_t x, uint16_t y, char ch, atk_md0280_lcd_font_t font, uint16_t color);                                               /* ATK-MD0280模块LCD显示1个字符 */
-void atk_md0280_show_string(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *str, atk_md0280_lcd_font_t font, uint16_t color);          /* ATK-MD0280模块LCD显示字符串 */
-void atk_md0280_show_xnum(uint16_t x, uint16_t y, uint32_t num, uint8_t len, atk_md0280_num_mode_t mode, atk_md0280_lcd_font_t font, uint16_t color); /* ATK-MD0280模块LCD显示数字，可控制显示高位0 */
-void atk_md0280_show_num(uint16_t x, uint16_t y, uint32_t num, uint8_t len, atk_md0280_lcd_font_t font, uint16_t color);                              /* ATK-MD0280模块LCD显示数字，不显示高位0 */
-void atk_md0280_show_pic(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t *pic);                                                      /* ATK-MD0280模块LCD图片 */
+uint16_t atk_md0280_read_point(uint16_t x, uint16_t y);                                
 
 #ifdef __cplusplus
 }

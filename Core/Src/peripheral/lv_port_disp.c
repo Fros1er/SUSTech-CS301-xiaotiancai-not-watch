@@ -159,17 +159,7 @@ void disp_disable_update(void) {
 static void disp_flush(lv_disp_drv_t* disp_drv, const lv_area_t* area, lv_color_t* color_p) {
     if (disp_flush_enabled) {
         /*The most simple case (but also the slowest) to put all pixels to the screen one-by-one*/
-
-        int32_t x;
-        int32_t y;
-        for (y = area->y1; y <= area->y2; y++) {
-            for (x = area->x1; x <= area->x2; x++) {
-                /*Put a pixel to the display. For example:*/
-                /*put_px(x, y, *color_p)*/
-                atk_md0280_draw_point(x, y, color_p->full);
-                color_p++;
-            }
-        }
+        atk_md0280_fill_area(area->x1, area->y1, area->x2, area->y2, (uint16_t*)color_p);
     }
 
     /*IMPORTANT!!!
