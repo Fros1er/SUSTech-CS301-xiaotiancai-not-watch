@@ -12,10 +12,14 @@
 #include "lv_port_disp.h"
 #include "lv_port_indev.h"
 #include "lvgl.h"
+#include "remote.hpp"
 #include "stm32f1xx_hal.h"
 #include "tim.h"
 #include "uart.hpp"
 #include "usart.h"
+
+void remote_recv_cb(RemoteKey key) {
+}
 
 void init() {
     led_init();
@@ -23,6 +27,7 @@ void init() {
     uart_init();
     DWT_Delay_Init();
     eeprom_init();
+    remote_init();
     if (atk_md0280_init() != 0) {
         led_writepin(0, LED_ON);
         led_writepin(1, LED_ON);
