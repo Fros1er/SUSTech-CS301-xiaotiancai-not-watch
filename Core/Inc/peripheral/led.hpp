@@ -14,6 +14,15 @@ void led_blink_sequence(const char *seq);
 
 #ifdef __cplusplus
 }
+
+extern const char *active_blink_seq;
+extern bool isblinking;
+
+#define led_blink(led)       \
+    if (active_blink_seq == NULL) { \
+        led_writepin(led, LED_ON);  \
+        isblinking = true; \
+    }
 #endif
 
 #define LED_BLINK_LEN 100
@@ -22,7 +31,5 @@ void led_blink_sequence(const char *seq);
 
 #define led_writepin(led, state) HAL_GPIO_WritePin(LED_##led##_GPIO_Port, LED_##led##_Pin, state);
 
-#define led_blink(led, state)       \
-    if (active_blink_seq == NULL) { \
-        led_writepin(led, LED_ON);  \
-    }
+
+

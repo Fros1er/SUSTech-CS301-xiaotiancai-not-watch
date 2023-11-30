@@ -5,15 +5,15 @@
 const char *active_blink_seq = NULL;
 
 void led_init() {
-    led_writepin(0, LED_OFF);
+    // led_writepin(0, LED_OFF);
     led_writepin(1, LED_OFF);
 }
 
 static void set_led_by_char(char c) {
     if (c == '0') {
-        led_writepin(0, LED_ON);
+        // led_writepin(0, LED_ON);
     } else if (c == ' ') {
-        led_writepin(0, LED_ON);
+        // led_writepin(0, LED_ON);
         led_writepin(1, LED_ON);
     } else {
         led_writepin(1, LED_ON);
@@ -21,17 +21,22 @@ static void set_led_by_char(char c) {
 }
 
 static uint8_t is_blink_off = 0;
+bool isblinking = false;
 
 // call every 0.5s for 1s blink
 void led_update() {
+    if (!isblinking) {
+        return;
+    }
     if (active_blink_seq == NULL) {
-        led_writepin(0, LED_OFF);
+        // led_writepin(0, LED_OFF);
+        isblinking = false;
         led_writepin(1, LED_OFF);
         return;
     }
 
     if (is_blink_off) {
-        led_writepin(0, LED_OFF);
+        // led_writepin(0, LED_OFF);
         led_writepin(1, LED_OFF);
     } else {
         char c = *(active_blink_seq++);

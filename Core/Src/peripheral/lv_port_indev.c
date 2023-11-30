@@ -99,15 +99,15 @@ static void touchpad_init(void) {
 
 /*Will be called by the library to read the touchpad*/
 static void touchpad_read(lv_indev_drv_t *indev_drv, lv_indev_data_t *data) {
-    static lv_coord_t last_x = 0;
-    static lv_coord_t last_y = 0;
+    static uint16_t last_x = 0;
+    static uint16_t last_y = 0;
 
     /*Save the pressed coordinates and the state*/
     if (atk_md0280_touch_scan(&last_x, &last_y) == ATK_MD0280_TOUCH_EOK) {
         data->state = LV_INDEV_STATE_PR;
         /*Set the last pressed coordinates*/
-        data->point.x = last_x;
-        data->point.y = last_y;
+        data->point.x = (lv_coord_t)last_x;
+        data->point.y = (lv_coord_t)last_y;
     } else {
         data->state = LV_INDEV_STATE_REL;
     }

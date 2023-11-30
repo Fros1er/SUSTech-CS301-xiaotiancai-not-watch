@@ -49,6 +49,10 @@
 #define SPI_SPEED_128 6
 #define SPI_SPEED_256 7
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void spi1_init(void);
 void spi1_set_speed(uint8_t speed);
 uint8_t spi1_read_write_byte(uint8_t txdata);
@@ -124,5 +128,9 @@ uint8_t sd_get_csd(uint8_t *csd_data); /* 获取SD卡的CSD信息 */
 
 uint8_t sd_read_disk(uint8_t *pbuf, uint32_t saddr, uint32_t cnt);  /* 读SD卡(fatfs/usb调用) */
 uint8_t sd_write_disk(uint8_t *pbuf, uint32_t saddr, uint32_t cnt); /* 写SD卡(fatfs/usb调用) */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
