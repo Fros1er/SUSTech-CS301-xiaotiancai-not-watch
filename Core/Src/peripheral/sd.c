@@ -29,6 +29,19 @@
 
 #include "spi.h"
 
+
+
+/* 函数声明 */
+static void sd_spi_init(void);                    /* SD SPI 硬件初始化 */
+static void sd_deselect(void);                    /* SD卡取消选中 */
+static uint8_t sd_select(void);                   /* SD卡 选中 */
+static uint8_t sd_wait_ready(void);               /* 等待SD卡准备好 */
+static uint8_t sd_get_response(uint8_t response); /* 等待SD卡回应 */
+
+static uint8_t sd_send_cmd(uint8_t cmd, uint32_t arg);      /* SD卡发送命令 */
+static uint8_t sd_send_block(uint8_t *buf, uint8_t cmd);    /* SD卡发送一个数据块 */
+static uint8_t sd_receive_data(uint8_t *buf, uint16_t len); /* SD卡接收一次数据 */
+
 void spi1_set_speed(uint8_t speed) {
     assert_param(IS_SPI_BAUDRATE_PRESCALER(speed)); /* 判断有效性 */
     __HAL_SPI_DISABLE(&hspi1);                      /* 关闭SPI */
@@ -516,7 +529,7 @@ uint8_t sd_write_disk(uint8_t *pbuf, uint32_t saddr, uint32_t cnt) {
     } else {
         if (sd_type != SD_TYPE_MMC) {
             do {
-                sd_send_cmd(ACMD23, cnt); /* 发送 ACMD23 指令 */
+                res = sd_send_cmd(ACMD23, cnt); /* 发送 ACMD23 指令 */
             } while (res && retry--);
         }
 

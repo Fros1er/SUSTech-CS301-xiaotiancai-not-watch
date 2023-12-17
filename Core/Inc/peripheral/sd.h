@@ -109,17 +109,6 @@ uint8_t spi1_read_write_byte(uint8_t txdata);
 /* SD卡的类型 */
 extern uint8_t sd_type;
 
-/* 函数声明 */
-static void sd_spi_init(void);                    /* SD SPI 硬件初始化 */
-static void sd_deselect(void);                    /* SD卡取消选中 */
-static uint8_t sd_select(void);                   /* SD卡 选中 */
-static uint8_t sd_wait_ready(void);               /* 等待SD卡准备好 */
-static uint8_t sd_get_response(uint8_t response); /* 等待SD卡回应 */
-
-static uint8_t sd_send_cmd(uint8_t cmd, uint32_t arg);      /* SD卡发送命令 */
-static uint8_t sd_send_block(uint8_t *buf, uint8_t cmd);    /* SD卡发送一个数据块 */
-static uint8_t sd_receive_data(uint8_t *buf, uint16_t len); /* SD卡接收一次数据 */
-
 uint8_t sd_init(void);                 /* SD卡初始化 */
 uint32_t sd_get_sector_count(void);    /* 获取SD卡的总扇区数(扇区数) */
 uint8_t sd_get_status(void);           /* 获取SD卡状态 */

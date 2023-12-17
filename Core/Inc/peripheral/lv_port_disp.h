@@ -25,7 +25,13 @@ extern "C" {
 /*********************
  *      DEFINES
  *********************/
+#ifndef MY_DISP_HOR_RES
+#define MY_DISP_HOR_RES (240)
+#endif
 
+#ifndef MY_DISP_VER_RES
+#define MY_DISP_VER_RES (320)
+#endif
 /**********************
  *      TYPEDEFS
  **********************/
