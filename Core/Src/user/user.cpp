@@ -16,7 +16,6 @@
 #include "lv_port_disp.h"
 #include "lv_port_indev.h"
 #include "lvgl.h"
-#include "menu.h"
 #include "remote.hpp"
 #include "sd.h"
 #include "stm32f1xx_hal.h"
@@ -28,13 +27,7 @@ void remote_recv_cb(RemoteKey key) {
 }
 
 void init() {
-    led_init();
-    button_init();
-    uart_init();
     DWT_Delay_Init();
-    eeprom_init();
-    remote_init();
-    sd_init();
     if (atk_md0280_init() != 0) {
         // led_writepin(0, LED_ON);
         led_writepin(1, LED_ON);
@@ -44,6 +37,12 @@ void init() {
     lv_init();
     lv_port_disp_init();
     lv_port_indev_init();
+    eeprom_init();
+    remote_init();
+    sd_init();
+    led_init();
+    button_init();
+    uart_init();
     UART_TRANSMIT_STR_LITERIAL_DMA("Welcome!\n");
 
     // FATFS *fs = (FATFS *)lv_mem_alloc(sizeof(FATFS));
@@ -65,9 +64,13 @@ void init() {
     // lv_label_set_text(label1, (const char *)buf);
     // lv_obj_set_style_text_align(label1, LV_TEXT_ALIGN_CENTER, 0);
     // lv_obj_align(label1, LV_ALIGN_CENTER, 0, -40);
-    ApplicationFSM::instance().register_application("Calc", new Calculator());
-    ApplicationFSM::instance().register_application("Menu", new Menu());
-    ApplicationFSM::instance().switch_to("Menu");
+    auto &fsm = ApplicationFSM::instance();
+    fsm.init(); // init other apps after this
+    fsm.register_application(new Calculator());
+    fsm.switch_to("Menu");
+    // lv_obj_add_flag(test->_bg.get(), LV_OBJ_FLAG_HIDDEN);
+    // lv_obj_clear_flag(ApplicationFSM::instance().menu->_bg.get(), LV_OBJ_FLAG_HIDDEN);
+    
 }
 
 void tick() {
