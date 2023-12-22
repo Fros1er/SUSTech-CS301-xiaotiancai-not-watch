@@ -32,7 +32,25 @@
  * @param       无
  * @retval      无
  */
+#define REMOTE_TIM5_CH2_Pin GPIO_PIN_1
+#define REMOTE_TIM5_CH2_GPIO_Port GPIOA
+
+uint8_t is_remote_on() {
+    // return HAL_GPIO_
+}
+
 void remote_init(void) {
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+    GPIO_InitStruct.Pin = REMOTE_TIM5_CH2_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    HAL_GPIO_Init(REMOTE_TIM5_CH2_GPIO_Port, &GPIO_InitStruct);
+
+    /* TIM5 interrupt Init */
+    HAL_NVIC_SetPriority(TIM5_IRQn, 2, 0);
+    HAL_NVIC_EnableIRQ(TIM5_IRQn);
+
     HAL_TIM_IC_Start_IT(&htim5, REMOTE_IN_TIMX_CHY);               /* 开始捕获TIM5的通道2 */
     __HAL_TIM_ENABLE_IT(&htim5, TIM_IT_UPDATE); /* 使能更新中断 */ /* 使能更新中断 */
 }

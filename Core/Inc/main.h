@@ -57,9 +57,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define KEY_WAKEUP_Pin GPIO_PIN_0
-#define KEY_WAKEUP_GPIO_Port GPIOA
-#define KEY_WAKEUP_EXTI_IRQn EXTI0_IRQn
 #define REMOTE_TIM5_CH2_Pin GPIO_PIN_1
 #define REMOTE_TIM5_CH2_GPIO_Port GPIOA
 #define FLASH_SPI_CS_Pin GPIO_PIN_2
@@ -68,6 +65,8 @@ void Error_Handler(void);
 #define TF_SPI_CS_GPIO_Port GPIOA
 #define NRF_CE_Pin GPIO_PIN_4
 #define NRF_CE_GPIO_Port GPIOA
+#define NRF_CS_Pin GPIO_PIN_4
+#define NRF_CS_GPIO_Port GPIOC
 #define KEY_0_Pin GPIO_PIN_5
 #define KEY_0_GPIO_Port GPIOC
 #define KEY_0_EXTI_IRQn EXTI9_5_IRQn

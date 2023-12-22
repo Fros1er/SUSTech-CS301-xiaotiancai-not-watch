@@ -29,6 +29,7 @@
 #define __SPI_SDCARD_H
 
 #include "stm32f1xx_hal.h"
+#include "spi_driver.h"
 
 /******************************************************************************************/
 /* SD卡 片选 引脚 定义 */
@@ -40,22 +41,9 @@
         __HAL_RCC_GPIOA_CLK_ENABLE(); \
     } while (0)
 
-#define SPI_SPEED_2 0
-#define SPI_SPEED_4 1
-#define SPI_SPEED_8 2
-#define SPI_SPEED_16 3
-#define SPI_SPEED_32 4
-#define SPI_SPEED_64 5
-#define SPI_SPEED_128 6
-#define SPI_SPEED_256 7
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-void spi1_init(void);
-void spi1_set_speed(uint8_t speed);
-uint8_t spi1_read_write_byte(uint8_t txdata);
 
 /* SD卡 SPI 操作函数 宏定义
  * 大家移植的时候, 根据需要实现: spi1_read_write_byte 和 spi1_set_speed
