@@ -243,8 +243,8 @@
 #else
 #define	ENTER_FF(fs) { }
 #define LEAVE_FF(fs, res)  return res
-//#define   ENTER_FF(fs) {ff_enter(fs);}                    //{OS_ENTER_CRITICAL();}            //½øÈëFATFS,¹Ø±ÕÖÐ¶Ï,·ÀÖ¹Ïà»¥¸ÉÈÅ
-//#define   LEAVE_FF(fs, res) {ff_leave(fs);return res;}    //{OS_EXIT_CRITICAL();return res;}  //Àë¿ªFATFS,¿ªÆôÖÐ¶Ï,ÈÎÎñ¼ÌÐøÖ´ÐÐ
+//#define   ENTER_FF(fs) {ff_enter(fs);}                    //{OS_ENTER_CRITICAL();}            //è¿›å…¥FATFS,å…³é—­ä¸­æ–­,é˜²æ­¢ç›¸äº’å¹²æ‰°
+//#define   LEAVE_FF(fs, res) {ff_leave(fs);return res;}    //{OS_EXIT_CRITICAL();return res;}  //ç¦»å¼€FATFS,å¼€å¯ä¸­æ–­,ä»»åŠ¡ç»§ç»­æ‰§è¡Œ
 #endif
 
 
@@ -1666,7 +1666,7 @@ static FRESULT dir_clear (	/* Returns FR_OK or FR_DISK_ERR */
 /* Directory handling - Set directory index                              */
 /*-----------------------------------------------------------------------*/
 
-//static,ÆÁ±Îstatic,ÈÃÆäËû.c¿ÉÒÔµ÷ÓÃdir_sdiº¯Êý 
+//static,å±è”½static,è®©å…¶ä»–.cå¯ä»¥è°ƒç”¨dir_sdiå‡½æ•° 
 FRESULT dir_sdi (	/* FR_OK(0):succeeded, !=0:error */
 	DIR* dp,		/* Pointer to directory object */
 	DWORD ofs		/* Offset of directory table */
@@ -3359,7 +3359,7 @@ static FRESULT mount_volume (	/* FR_OK(0): successful, !=0: an error occurred */
 #if FF_FS_REENTRANT
 	if (!lock_fs(fs)) return FR_TIMEOUT;	/* Lock the volume */
 #else
-	ENTER_FF(fs);						//²ÎÕÕÔçÆÚ°æ±¾µÄFATFS,×ÔÐÐÌí¼Ó,·ñÔò»áÓÐÎÊÌâ
+	ENTER_FF(fs);						//å‚ç…§æ—©æœŸç‰ˆæœ¬çš„FATFS,è‡ªè¡Œæ·»åŠ ,å¦åˆ™ä¼šæœ‰é—®é¢˜
 #endif
 	*rfs = fs;							/* Return pointer to the filesystem object */
 
@@ -3585,7 +3585,7 @@ static FRESULT validate (	/* Returns FR_OK or FR_INVALID_OBJECT */
 		}
 #else
 		if (!(disk_status(obj->fs->pdrv) & STA_NOINIT)) { /* Test if the phsical drive is kept initialized */
-			ENTER_FF(obj->fs);  //²ÎÕÕÔçÆÚ°æ±¾µÄFATFS,×ÔÐÐÌí¼Ó,·ñÔò»áÓÐÎÊÌâ
+			ENTER_FF(obj->fs);  //å‚ç…§æ—©æœŸç‰ˆæœ¬çš„FATFS,è‡ªè¡Œæ·»åŠ ,å¦åˆ™ä¼šæœ‰é—®é¢˜
 			res = FR_OK;
 		}
 #endif
@@ -4179,7 +4179,7 @@ FRESULT f_close (
 #if FF_FS_REENTRANT
 			unlock_fs(fs, FR_OK);		/* Unlock volume */
 #endif
-            LEAVE_FF(fp->obj.fs,res);   //FATFSÐÂ°æ±¾µÄbug,±ØÐë¼ÓÉÏÕâ¾ä,·ñÔòÔÚÊ¹ÓÃOSµÄÊ±ºò,¿ÉÄÜµ¼ÖÂ¹Ø±ÕÖÐ¶Ïºó,Ò»Ö±²»¿ªÆô,´Ó¶ø¼ÙËÀ.
+            LEAVE_FF(fp->obj.fs,res);   //FATFSæ–°ç‰ˆæœ¬çš„bug,å¿…é¡»åŠ ä¸Šè¿™å¥,å¦åˆ™åœ¨ä½¿ç”¨OSçš„æ—¶å€™,å¯èƒ½å¯¼è‡´å…³é—­ä¸­æ–­åŽ,ä¸€ç›´ä¸å¼€å¯,ä»Žè€Œå‡æ­».
 		}
 	}
 	return res;
@@ -4622,7 +4622,7 @@ FRESULT f_closedir (
 		unlock_fs(fs, FR_OK);		/* Unlock volume */
 #endif
 	}
-    LEAVE_FF(dp->obj.fs,res);       //FATFSÐÂ°æ±¾µÄbug,±ØÐë¼ÓÉÏÕâ¾ä,·ñÔòÔÚÊ¹ÓÃOSµÄÊ±ºò,¿ÉÄÜµ¼ÖÂ¹Ø±ÕÖÐ¶Ïºó,Ò»Ö±²»¿ªÆô,´Ó¶ø¼ÙËÀ.
+    LEAVE_FF(dp->obj.fs,res);       //FATFSæ–°ç‰ˆæœ¬çš„bug,å¿…é¡»åŠ ä¸Šè¿™å¥,å¦åˆ™åœ¨ä½¿ç”¨OSçš„æ—¶å€™,å¯èƒ½å¯¼è‡´å…³é—­ä¸­æ–­åŽ,ä¸€ç›´ä¸å¼€å¯,ä»Žè€Œå‡æ­».
     //return res;
 }
 

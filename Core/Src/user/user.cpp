@@ -5,6 +5,7 @@
 #include <cstring>
 #include <stdexcept>
 
+#include "album.h"
 #include "application.h"
 #include "atk_md0280.h"
 #include "button.hpp"
@@ -45,9 +46,9 @@ void init() {
     uart_init();
     UART_TRANSMIT_STR_LITERIAL_DMA("Welcome!\n");
 
-    // FATFS *fs = (FATFS *)lv_mem_alloc(sizeof(FATFS));
-    // lv_memset(fs, 0, sizeof(FATFS));
-    // f_mount(fs, "0:", 1);
+    FATFS *fs = (FATFS *)lv_mem_alloc(sizeof(FATFS));
+    lv_memset(fs, 0, sizeof(FATFS));
+    f_mount(fs, "0:", 1);
     // lv_fs_file_t f;
     // lv_fs_res_t res;
     // res = lv_fs_open(&f, "0:test.txt", LV_FS_MODE_RD);
@@ -65,12 +66,10 @@ void init() {
     // lv_obj_set_style_text_align(label1, LV_TEXT_ALIGN_CENTER, 0);
     // lv_obj_align(label1, LV_ALIGN_CENTER, 0, -40);
     auto &fsm = ApplicationFSM::instance();
-    fsm.init(); // init other apps after this
+    fsm.init();  // init other apps after this
     fsm.register_application(new Calculator());
+    fsm.register_application(new Album());
     fsm.switch_to("Menu");
-    // lv_obj_add_flag(test->_bg.get(), LV_OBJ_FLAG_HIDDEN);
-    // lv_obj_clear_flag(ApplicationFSM::instance().menu->_bg.get(), LV_OBJ_FLAG_HIDDEN);
-    
 }
 
 void tick() {

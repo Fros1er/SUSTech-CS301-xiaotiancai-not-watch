@@ -387,7 +387,8 @@ void eeprom_save_touch_calib(uint8_t *data) {
 }
 
 uint8_t eeprom_load_touch_calib(uint8_t *data) {
-    if (eeprom_read_byte(16) != 0xc7) {
+	uint8_t magic = eeprom_read_byte(16);
+    if (magic != 0xc7) {
         return 1;
     }
     eeprom_read_bytes(17, data, 12);

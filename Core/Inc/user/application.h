@@ -7,6 +7,8 @@
 #include "lv_port_disp.h"
 #include "lvgl.h"
 
+constexpr auto MENU_BAR_HEIGHT = 30;
+
 class ApplicationFSM;
 
 class Application {
@@ -14,7 +16,7 @@ class Application {
     std::string _name;
 
    protected:
-    std::unique_ptr<lv_obj_t> _bg;
+    lv_obj_t *_bg;
 
    public:
     Application(const std::string &name);
@@ -25,6 +27,7 @@ class Application {
 class Menu : public Application {
     friend class ApplicationFSM;
     void register_application(const std::string &name);
+    int app_num = 0;
 
    public:
     Menu();
@@ -41,6 +44,8 @@ class ApplicationFSM {
     Application *cur_app = nullptr;
 
     ApplicationFSM();
+
+    lv_obj_t *_title_bar, *_back_btn, *_title;
 
    public:
     void init();
