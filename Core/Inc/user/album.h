@@ -16,7 +16,4 @@ class Album : public Application {
     static void go_left(lv_event_t *e);
     static void go_right(lv_event_t *e);
     void enter() override;
-
-    void exit() override {
-    }
 };

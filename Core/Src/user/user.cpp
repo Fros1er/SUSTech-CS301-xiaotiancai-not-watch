@@ -17,6 +17,7 @@
 #include "lv_port_disp.h"
 #include "lv_port_indev.h"
 #include "lvgl.h"
+#include "mem_monitor.h"
 #include "remote.hpp"
 #include "sd.h"
 #include "stm32f1xx_hal.h"
@@ -69,13 +70,17 @@ void init() {
     fsm.init();  // init other apps after this
     fsm.register_application(new Calculator());
     fsm.register_application(new Album());
+    fsm.register_application(new MemoryMonitor());
     fsm.switch_to("Menu");
 }
 
 void tick() {
     uint32_t now = HAL_GetTick();
-    if (now % 500 == 0) {
-        led_update();
+    if (now % 100 == 0) {
+        ApplicationFSM::instance().tick();
+        if (now % 500 == 0) {
+            led_update();
+        }
     }
     button_update();
     lv_task_handler();

@@ -20,8 +20,12 @@ class Application {
 
    public:
     Application(const std::string &name);
-    virtual void enter() = 0;
-    virtual void exit() = 0;
+    virtual void enter() {
+    }
+    virtual void exit() {
+    }
+    virtual void tick() {
+    }
 };
 
 class Menu : public Application {
@@ -31,12 +35,6 @@ class Menu : public Application {
 
    public:
     Menu();
-
-    void enter() override {
-    }
-
-    void exit() override {
-    }
 };
 
 class ApplicationFSM {
@@ -52,6 +50,7 @@ class ApplicationFSM {
     Menu *menu = nullptr;
     void register_application(Application *app);
     void switch_to(const std::string &name);
+    void tick();
     static ApplicationFSM &instance() {
         static ApplicationFSM instance;
         return instance;

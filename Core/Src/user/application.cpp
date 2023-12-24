@@ -2,7 +2,7 @@
 
 #include <string>
 
-static lv_style_t titlebar_style, bg_style; 
+static lv_style_t titlebar_style, bg_style;
 
 Application::Application(const std::string &name)
     : _name{name} {
@@ -90,5 +90,11 @@ void ApplicationFSM::switch_to(const std::string &name) {
         lv_obj_add_flag(_back_btn, LV_OBJ_FLAG_HIDDEN);
     } else {
         lv_obj_clear_flag(_back_btn, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+void ApplicationFSM::tick() {
+    if (cur_app != nullptr) {
+        cur_app->tick();
     }
 }
