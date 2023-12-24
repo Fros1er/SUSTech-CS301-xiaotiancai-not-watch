@@ -6,6 +6,7 @@
 Album::Album()
     : Application("Album") {
     FRESULT err;
+    std::string prefix = "0:/PICTURE/";
 
     HANDLE_ERR(f_opendir(&dir, "0:/PICTURE"));
     FILINFO info;
@@ -14,11 +15,11 @@ Album::Album()
         if (info.fname[0] == '\0') {
             break;
         }
-        total++;
+        files.push_back(prefix + info.fname);
     }
+    files.shrink_to_fit();
     label = lv_label_create(_bg);
     lv_obj_align(label, LV_ALIGN_BOTTOM_MID, 0, -10);
-    change_page(this);
     btn_left = lv_btn_create(_bg);
     btn_right = lv_btn_create(_bg);
     lv_obj_align(btn_left, LV_ALIGN_BOTTOM_MID, -50, 0);
@@ -34,6 +35,13 @@ Album::Album()
         lv_obj_center(label);
     }
 
+    img = lv_img_create(_bg);
+    lv_obj_align(img, LV_ALIGN_CENTER, 0, -40);
+    lv_obj_set_size(img, 200, 200);
+
+    filename_label = lv_label_create(_bg);
+    lv_obj_align(filename_label, LV_ALIGN_BOTTOM_MID, 0, -45);
+
     return;
 ERR_HANDLE:
     label = lv_label_create(_bg);
@@ -43,21 +51,28 @@ ERR_HANDLE:
     return;
 }
 
+void Album::enter() {
+    change_page(this);
+}
+
 void Album::go_left(lv_event_t *e) {
     Album *self = (Album *)e->user_data;
     self->cur--;
-    if (self->cur < 0) self->cur = self->total - 1;
+    if (self->cur < 0) self->cur = self->files.size() - 1;
     Album::change_page(self);
 }
 
 void Album::go_right(lv_event_t *e) {
     Album *self = (Album *)e->user_data;
     self->cur++;
-    if (self->cur >= self->total) self->cur = 0;
+    if (self->cur >= self->files.size()) self->cur = 0;
     Album::change_page(self);
 }
 
 void Album::change_page(Album *self) {
-    std::snprintf(self->paginator_buf, 16, "%d / %d", self->cur + 1, self->total);
+    std::snprintf(self->paginator_buf, 16, "%d / %d", self->cur + 1, self->files.size());
     lv_label_set_text_static(self->label, self->paginator_buf);
+    const char *path = self->files[self->cur].c_str();
+    lv_img_set_src(self->img, path);
+    lv_label_set_text_static(self->filename_label, path);
 }
