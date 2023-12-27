@@ -26,7 +26,7 @@
  */
 
 #include "sd.h"
-
+#include "dwt_delay.h"
 #include "spi.h"
 
 
@@ -93,15 +93,14 @@ static uint8_t sd_select(void) {
  *              SD_ERROR,   失败
  */
 static uint8_t sd_wait_ready(void) {
-    uint32_t t = 0;
+    uint32_t t = 500;
 
     do {
         if (sd_spi_read_write_byte(0XFF) == 0XFF) {
             return SD_OK; /* OK */
         }
-
-        t++;
-    } while (t < 0XFFFFFF); /* 等待 */
+        DWT_Delay_us(1000);
+    } while (t--); /* 等待 */
 
     return SD_ERROR;
 }
