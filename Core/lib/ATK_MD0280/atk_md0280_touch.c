@@ -160,13 +160,13 @@ static void atk_md0280_touch_calibration(void)
     if (1) {  // atkp may drop to an infinite loop, we use this to skip it
         g_atk_md0280_touch_sta.fac.x = (float)14.5524998;
         g_atk_md0280_touch_sta.fac.y = (float)11.9392853;
-        
+
         g_atk_md0280_touch_sta.center.x = 2084;
         g_atk_md0280_touch_sta.center.y = 2029;
 
         eeprom_save_touch_calib(&g_atk_md0280_touch_sta);
         atk_md0280_clear(ATK_MD0280_WHITE);
-        
+
         return;
     }
 
@@ -277,9 +277,9 @@ void atk_md0280_touch_init(void)
     atk_md0280_touch_hw_init();
     atk_md0280_touch_spi_init();
 
-    if (eeprom_load_touch_calib(&g_atk_md0280_touch_sta)) {
+    // if (eeprom_load_touch_calib(&g_atk_md0280_touch_sta)) {
         atk_md0280_touch_calibration();
-    }
+    // }
 }
 
 /**

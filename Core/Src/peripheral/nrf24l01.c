@@ -27,8 +27,8 @@
 #include "spi_driver.h"
 
 extern SPI_HandleTypeDef hspi1;                                          /* SPI1句柄 */
-const uint8_t TX_ADDRESS[TX_ADR_WIDTH] = {0x34, 0x43, 0x10, 0x10, 0x01}; /* 发送地址 */
-const uint8_t RX_ADDRESS[RX_ADR_WIDTH] = {0x34, 0x43, 0x10, 0x10, 0x01}; /* 发送地址 */
+const uint8_t TX_ADDRESS[TX_ADR_WIDTH] = {0xde, 0xad, 0xbe, 0xef, 0x88}; /* 发送地址 */
+const uint8_t RX_ADDRESS[RX_ADR_WIDTH] = {0xde, 0xad, 0xbe, 0xef, 0x88}; /* 发送地址 */
 
 /**
  * @brief       针对NRF24L01修改SPI驱动
@@ -73,13 +73,12 @@ uint8_t nrf24l01_check(void) {
     uint8_t i;
     spi1_set_speed(SPI_SPEED_32);                        /* spi速度为7.5Mhz（24L01的最大SPI时钟为10Mhz） */
     nrf24l01_write_buf(NRF_WRITE_REG + TX_ADDR, buf, 5); /* 写入5个字节的地址. */
+    buf[0] = 0;                                     
     nrf24l01_read_buf(TX_ADDR, buf, 5);                  /* 读出写入的地址 */
 
     for (i = 0; i < 5; i++) {
-        if (buf[i] != 0XA5) break;
+        if (buf[i] != 0XA5) return 1; /* 检测24L01错误 */
     }
-
-    if (i != 5) return 1; /* 检测24L01错误 */
 
     return 0; /* 检测到24L01 */
 }
@@ -226,7 +225,7 @@ void nrf24l01_rx_mode(void) {
 
     nrf24l01_write_reg(NRF_WRITE_REG + EN_AA, 0x01);              /* 使能通道0的自动应答 */
     nrf24l01_write_reg(NRF_WRITE_REG + EN_RXADDR, 0x01);          /* 使能通道0的接收地址 */
-    nrf24l01_write_reg(NRF_WRITE_REG + RF_CH, 40);                /* 设置RF通信频率 */
+    nrf24l01_write_reg(NRF_WRITE_REG + RF_CH, 97);                /* 设置RF通信频率 */
     nrf24l01_write_reg(NRF_WRITE_REG + RX_PW_P0, RX_PLOAD_WIDTH); /* 选择通道0的有效数据宽度 */
     nrf24l01_write_reg(NRF_WRITE_REG + RF_SETUP, 0x0f);           /* 设置TX发射参数,0db增益,2Mbps开启 */
     nrf24l01_write_reg(NRF_WRITE_REG + CONFIG, 0x0f);             /* 配置基本工作模式的参数;PWR_UP,EN_CRC,16BIT_CRC,接收模式 */
@@ -249,7 +248,7 @@ void nrf24l01_tx_mode(void) {
     nrf24l01_write_reg(NRF_WRITE_REG + EN_AA, 0x01);      /* 使能通道0的自动应答 */
     nrf24l01_write_reg(NRF_WRITE_REG + EN_RXADDR, 0x01);  /* 使能通道0的接收地址 */
     nrf24l01_write_reg(NRF_WRITE_REG + SETUP_RETR, 0x1a); /* 设置自动重发间隔时间:500us + 86us;最大自动重发次数:10次 */
-    nrf24l01_write_reg(NRF_WRITE_REG + RF_CH, 40);        /* 设置RF通道为40 */
+    nrf24l01_write_reg(NRF_WRITE_REG + RF_CH, 97);        /* 设置RF通道为40 */
     nrf24l01_write_reg(NRF_WRITE_REG + RF_SETUP, 0x0f);   /* 设置TX发射参数,0db增益,2Mbps */
     nrf24l01_write_reg(NRF_WRITE_REG + CONFIG, 0x0e);     /* 配置基本工作模式的参数;PWR_UP,EN_CRC,16BIT_CRC,接收模式,开启所有中断 */
     NRF24L01_CE(1);                                       /* CE为高,10us后启动发送 */

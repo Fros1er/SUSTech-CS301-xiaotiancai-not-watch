@@ -22,8 +22,7 @@
  ****************************************************************************************************
  */
 
-#ifndef __24L01_H
-#define __24L01_H
+#pragma once
 
 #include "stm32f1xx_hal.h"
 
@@ -112,7 +111,9 @@
 #define NRF_FIFO_STATUS 0x17    /* FIFO状态寄存器;bit0,RX FIFO寄存器空标志;bit1,RX FIFO满标志;bit2,3,保留 */
                                 /* bit4,TX FIFO空标志;bit5,TX FIFO满标志;bit6,1,循环发送上一数据包.0,不循环; */
 /******************************************************************************************/
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 /* 函数申明 */
 static uint8_t nrf24l01_write_buf(uint8_t reg, uint8_t *pbuf, uint8_t uint8_ts);   /* 写数据区 */
 static uint8_t nrf24l01_read_buf(uint8_t reg, uint8_t *pbuf, uint8_t uint8_ts);    /* 读数据区 */
@@ -125,15 +126,6 @@ uint8_t nrf24l01_check(void);   /* 检查24L01是否存在 */
 uint8_t nrf24l01_tx_packet(uint8_t *ptxbuf);     /* 发送一个包的数据 */
 uint8_t nrf24l01_rx_packet(uint8_t *prxbuf);     /* 接收一个包的数据 */
 
+#ifdef __cplusplus
+}
 #endif
-
-
-
-
-
-
-
-
-
-
-
