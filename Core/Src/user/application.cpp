@@ -2,6 +2,9 @@
 
 #include <string>
 
+#include "stm32f1xx_hal.h"
+#include "user_rtc.h"
+
 static lv_style_t titlebar_style, bg_style;
 
 Application::Application(const std::string &name)
@@ -15,6 +18,15 @@ Application::Application(const std::string &name)
 
 Menu::Menu()
     : Application("Menu") {
+    time_label = lv_label_create(_bg);
+    rtc_get_time();
+    update_time();
+    lv_obj_set_align(time_label, LV_ALIGN_TOP_MID);
+}
+
+void Menu::update_time() {
+    snprintf(time_buf, 32, "%04d/%02d/%02d %02d:%02d:%02d", rtc_calendar.year, rtc_calendar.month, rtc_calendar.date, rtc_calendar.hour, rtc_calendar.min, rtc_calendar.sec);
+    lv_label_set_text_static(time_label, time_buf);
 }
 
 static void event_handler(lv_event_t *e) {
@@ -23,7 +35,7 @@ static void event_handler(lv_event_t *e) {
 
 void Menu::register_application(const std::string &name) {
     lv_obj_t *btn = lv_btn_create(_bg);
-    lv_obj_set_pos(btn, 0, 50 * (app_num));
+    lv_obj_set_pos(btn, 0, 50 * (app_num + 1));
     lv_obj_add_event_cb(btn, event_handler, LV_EVENT_CLICKED, (void *)&name);
 
     lv_obj_t *label = lv_label_create(btn);
@@ -96,5 +108,14 @@ void ApplicationFSM::switch_to(const std::string &name) {
 void ApplicationFSM::tick() {
     if (cur_app != nullptr) {
         cur_app->tick();
+    }
+}
+
+void rtc_alarm_cb() {
+}
+void rtc_sec_cb() {
+    auto &menu = ApplicationFSM::instance().menu;
+    if (menu != nullptr) {
+        menu->update_time();
     }
 }

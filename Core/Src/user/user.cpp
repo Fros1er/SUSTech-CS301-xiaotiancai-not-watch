@@ -85,7 +85,7 @@ void init() {
     uart_transmit_debug_message("[OK] Initialized button\n");
     nrf24l01_init();
     uart_transmit_debug_message("[OK] Initialized nrf24l01\n");
-    _check_init(nrf24l01_check(), "NRF24L01 Check");
+    // _check_init(nrf24l01_check(), "NRF24L01 Check");
     int sd_mode = sd_init();
     uart_transmit_debug_message("[OK] Initialized SD Card\n");
     uart_transmit_debug_message("[Info] Entering main FSM\n");
