@@ -41,31 +41,14 @@ char buf[64];
 static void _check_init(int status_code, const char* func_name) {
     if (status_code != 0) {
         led_writepin(1, LED_ON);
-        strcpy(buf, "[Error] ");
-        strncat(buf, func_name, 32);
-        strcat(buf, " Failed.\n");
-        while (1) {
-        }
+        sprintf(buf, "[Error] %20s Failed.\n", func_name);
+        while (1);
     } else {
-        strcpy(buf, "[OK] ");
-        strncat(buf, func_name, 32);
-        strcat(buf, " Done.\n");
+        sprintf(buf, "[OK] %20s Done.\n", func_name);
     }
     uart_transmit_debug_message(buf);
 }
-static struct
-{
-    struct
-    {
-        float x;
-        float y;
-    } fac;          /* 校准比例因子 */
-    struct
-    {
-        uint16_t x;
-        uint16_t y;
-    } center;       /* 中心坐标的ADC值 */
-} g_atk_md0280_touch_sta = {0};
+
 void init() {
     uart_init();
     uart_transmit_debug_message("[Info] Starting Initialization\n");
@@ -83,11 +66,11 @@ void init() {
     uart_transmit_debug_message("[OK] Initialized led\n");
     button_init();
     uart_transmit_debug_message("[OK] Initialized button\n");
+    int sd_mode = sd_init();
+    uart_transmit_debug_message("[OK] Initialized SD Card\n");
     nrf24l01_init();
     uart_transmit_debug_message("[OK] Initialized nrf24l01\n");
     _check_init(nrf24l01_check(), "NRF24L01 Check");
-    int sd_mode = sd_init();
-    uart_transmit_debug_message("[OK] Initialized SD Card\n");
     uart_transmit_debug_message("[Info] Entering main FSM\n");
 
     FATFS *fs = (FATFS *)lv_mem_alloc(sizeof(FATFS));

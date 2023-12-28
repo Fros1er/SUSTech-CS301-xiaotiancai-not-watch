@@ -27,8 +27,8 @@
 #include "spi_driver.h"
 
 extern SPI_HandleTypeDef hspi1;                                          /* SPI1句柄 */
-const uint8_t TX_ADDRESS[TX_ADR_WIDTH] = {0xde, 0xad, 0xbe, 0xef, 0x88}; /* 发送地址 */
-const uint8_t RX_ADDRESS[RX_ADR_WIDTH] = {0xde, 0xad, 0xbe, 0xef, 0x88}; /* 发送地址 */
+const uint8_t TX_ADDRESS[TX_ADR_WIDTH] = {0x34, 0xde, 0x10, 0x10, 0x01}; /* 发送地址 */
+const uint8_t RX_ADDRESS[RX_ADR_WIDTH] = {0x34, 0xde, 0x10, 0x10, 0x01}; /* 发送地址 */
 
 /**
  * @brief       针对NRF24L01修改SPI驱动
@@ -73,12 +73,13 @@ uint8_t nrf24l01_check(void) {
     uint8_t i;
     spi1_set_speed(SPI_SPEED_32);                        /* spi速度为7.5Mhz（24L01的最大SPI时钟为10Mhz） */
     nrf24l01_write_buf(NRF_WRITE_REG + TX_ADDR, buf, 5); /* 写入5个字节的地址. */
-    buf[0] = 0;                                     
     nrf24l01_read_buf(TX_ADDR, buf, 5);                  /* 读出写入的地址 */
 
     for (i = 0; i < 5; i++) {
-        if (buf[i] != 0XA5) return 1; /* 检测24L01错误 */
+        if (buf[i] != 0XA5) break;
     }
+
+    if (i != 5) return 1; /* 检测24L01错误 */
 
     return 0; /* 检测到24L01 */
 }

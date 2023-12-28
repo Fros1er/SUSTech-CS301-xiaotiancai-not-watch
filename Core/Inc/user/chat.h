@@ -1,22 +1,22 @@
-#include "application.h"
-#include "nrf24l01.h"
-#include "dwt_delay.h"
+#pragma once
 
-typedef enum {
-    NA_MODE = 0x0,
-    RX_MODE = 0x1,
-    TX_MODE = 0x2
-} chat_room_nrf24l01_mode_t;
+#include "application.h"
+#include "utils.h"
+#include "dwt_delay.h"
+#include <vector>
 
 struct Chat : public Application {
     lv_obj_t *ta;
-	uint8_t tmp_buf[33];
-    uint8_t work_mode = NA_MODE;
+    lv_obj_t *label;
+    std::vector<std::string> msg_list;
+
     Chat();
 
     void exit() override {
         lv_textarea_set_text(ta, "");
-        work_mode = NA_MODE;
+    }
+    void enter() override {
+        nrf24l01_spi_init();
     }
     void tick() override;
 };
