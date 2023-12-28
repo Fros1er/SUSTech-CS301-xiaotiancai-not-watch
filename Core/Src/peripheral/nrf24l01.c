@@ -27,8 +27,8 @@
 #include "spi_driver.h"
 
 extern SPI_HandleTypeDef hspi1;                                          /* SPI1句柄 */
-const uint8_t TX_ADDRESS[TX_ADR_WIDTH] = {0x34, 0xde, 0x10, 0x10, 0x01}; /* 发送地址 */
-const uint8_t RX_ADDRESS[RX_ADR_WIDTH] = {0x34, 0xde, 0x10, 0x10, 0x01}; /* 发送地址 */
+uint8_t TX_ADDRESS[TX_ADR_WIDTH] = {0x34, 0xde, 0x10, 0x10, 0x01}; /* 发送地址 */
+uint8_t RX_ADDRESS[RX_ADR_WIDTH] = {0x34, 0xde, 0x10, 0x10, 0x01}; /* 发送地址 */
 
 /**
  * @brief       针对NRF24L01修改SPI驱动

@@ -93,13 +93,13 @@ static uint8_t sd_select(void) {
  *              SD_ERROR,   失败
  */
 static uint8_t sd_wait_ready(void) {
-    uint32_t t = 500;
+    uint32_t t = 50;
 
     do {
         if (sd_spi_read_write_byte(0XFF) == 0XFF) {
             return SD_OK; /* OK */
         }
-        DWT_Delay_us(1000);
+        DWT_Delay_us(100);
     } while (t--); /* 等待 */
 
     return SD_ERROR;
