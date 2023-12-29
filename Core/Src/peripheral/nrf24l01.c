@@ -30,6 +30,9 @@ extern SPI_HandleTypeDef hspi1;                                          /* SPI1
 uint8_t TX_ADDRESS[TX_ADR_WIDTH] = {0x34, 0xde, 0x10, 0x10, 0x01}; /* 发送地址 */
 uint8_t RX_ADDRESS[RX_ADR_WIDTH] = {0x34, 0xde, 0x10, 0x10, 0x01}; /* 发送地址 */
 
+static uint8_t nrf24l01_write_buf(uint8_t reg, uint8_t *pbuf, uint8_t uint8_ts);   /* 写数据区 */
+static uint8_t nrf24l01_read_buf(uint8_t reg, uint8_t *pbuf, uint8_t uint8_ts);    /* 读数据区 */
+
 /**
  * @brief       针对NRF24L01修改SPI驱动
  * @param       无

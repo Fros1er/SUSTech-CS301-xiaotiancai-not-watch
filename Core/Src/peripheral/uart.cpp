@@ -1,4 +1,6 @@
-#include "uart.hpp"
+#include "uart.h"
+
+#include <cstring>
 
 #include "cicular_buf.hpp"
 #include "stm32f1xx_hal.h"
@@ -25,6 +27,10 @@ void uart_transmit_dma(const uint8_t *data, uint16_t size) {
         ready = false;
         HAL_UART_Transmit_DMA(&huart1, data, size);
     }
+}
+
+void uart_transmit_message(const char *msg) {
+    uart_transmit_dma((uint8_t *)msg, strlen(msg));
 }
 
 extern "C" {

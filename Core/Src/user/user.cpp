@@ -19,35 +19,39 @@
 #include "lv_port_indev.h"
 #include "lvgl.h"
 #include "mem_monitor.h"
+#include "nrf24l01.h"
+#include "nrf_protocol.hpp"
 #include "remote.hpp"
 #include "sd.h"
+#include "server.h"
 #include "stm32f1xx_hal.h"
 #include "tim.h"
-#include "uart.hpp"
+#include "uart.h"
 #include "usart.h"
-#include "nrf24l01.h"
-#include "server.h"
 
 void remote_recv_cb(RemoteKey key) {
 }
 
-void uart_transmit_debug_message(const char* msg){
+void uart_transmit_debug_message(const char *msg) {
 #ifdef DEBUG
-	uart_transmit_dma((uint8_t*)msg, strlen(msg));
+    uart_transmit_dma((uint8_t *)msg, strlen(msg));
 #endif
 }
 
 char buf[64];
-static void _check_init(int status_code, const char* func_name) {
+static void _check_init(int status_code, const char *func_name) {
     if (status_code != 0) {
         led_writepin(1, LED_ON);
         sprintf(buf, "[Error] %20s Failed.\n", func_name);
-        while (1);
+        while (1)
+            ;
     } else {
         sprintf(buf, "[OK] %20s Done.\n", func_name);
     }
     uart_transmit_debug_message(buf);
 }
+
+bool init_done = false;
 
 void init() {
     uart_init();
@@ -96,20 +100,25 @@ void init() {
     fsm.init();  // init other apps after this
     fsm.register_application(new Calculator());
     fsm.register_application(new Chat());
-    if (!sd_mode){
-		fsm.register_application(new Album());
+    if (!sd_mode) {
+        fsm.register_application(new Album());
     } else {
         fsm.register_application(new Server());
     }
     fsm.register_application(new MemoryMonitor());
     fsm.switch_to("Menu");
     uart_transmit_debug_message("[Info] All done, welcome!\n");
+    init_done = true;
 }
 
 void tick() {
+    if (!init_done) {
+        return;
+    }
     uint32_t now = HAL_GetTick();
     if (now % 100 == 0) {
         ApplicationFSM::instance().tick();
+        nrf_protocol_tick();
         if (now % 500 == 0) {
             led_update();
         }

@@ -115,8 +115,6 @@
 extern "C" {
 #endif
 /* 函数申明 */
-static uint8_t nrf24l01_write_buf(uint8_t reg, uint8_t *pbuf, uint8_t uint8_ts);   /* 写数据区 */
-static uint8_t nrf24l01_read_buf(uint8_t reg, uint8_t *pbuf, uint8_t uint8_ts);    /* 读数据区 */
 
 void nrf24l01_spi_init(void);   /* 针对NRF24L01修改SPI驱动 */
 void nrf24l01_init(void);       /* 初始化 */

@@ -5,12 +5,13 @@
 
 extern uint8_t uart_buf[UART_BUF_SIZE];
 
-void uart_init();
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+void uart_init();
+
+void uart_transmit_message(const char *msg);
 
 void uart_transmit_dma(const uint8_t *data, uint16_t size);
 

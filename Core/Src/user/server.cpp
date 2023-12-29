@@ -1,4 +1,5 @@
 #include "server.h"
+#include "nrf_protocol.hpp"
 
 extern uint8_t TX_ADDRESS[TX_ADR_WIDTH];
 extern uint8_t RX_ADDRESS[RX_ADR_WIDTH];
