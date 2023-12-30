@@ -25,6 +25,13 @@ void Chat::textarea_event_handler(lv_event_t *e) {
     lv_textarea_set_text(self->ta, "");
 }
 
+void Chat::invite_event_handler(lv_event_t *e) {
+    Chat *self = (Chat *)e->user_data;
+    if (self->room_id) {
+        nrf_send_msg("Invite", self->room[self->room_id].room_addr, CHAT_INVITE);
+    }
+}
+
 void Chat::left_event_handler(lv_event_t *e) {
     Chat *self = (Chat *)e->user_data;
     if (self->room[self->room_id].msg_id > 0) {
@@ -50,6 +57,7 @@ void Chat::drop_event_handler(lv_event_t *e) {
     if (self->room[new_room].online) {
         self->room_id = new_room;
     } else {
+        ApplicationFSM::alert_cb("User offline!");
         lv_dropdown_set_selected(obj, self->room_id);
     }
 }
@@ -92,17 +100,25 @@ Chat::Chat()
 
     ta = lv_textarea_create(_bg);
     lv_obj_align(ta, LV_ALIGN_TOP_LEFT, 0, 90);
-    lv_obj_set_size(ta, 220, 40);
+    lv_obj_set_size(ta, 165, 40);
     lv_textarea_set_placeholder_text(ta, "Hello");
+
+    lv_obj_t *btn_invite = lv_btn_create(_bg);
+    lv_obj_add_event_cb(btn_invite, invite_event_handler, LV_EVENT_CLICKED, this);
+    lv_obj_align(btn_invite, LV_ALIGN_TOP_RIGHT, 0, 90);
+    lv_obj_set_size(btn_invite, 50, 40);
+    bl_text = lv_label_create(btn_invite);
+    lv_label_set_text_static(bl_text, "Invite");
+    lv_obj_center(bl_text);
 
     lv_obj_t *kb = lv_keyboard_create(_bg);
     lv_keyboard_set_textarea(kb, ta);
     lv_obj_add_event_cb(ta, textarea_event_handler, LV_EVENT_READY, this);
 
     dd = lv_dropdown_create(_bg);
-    std::string options = "";
-    for (int i = 0; i < 3; i++) {
-        options += user_names[room[i].room_addr] + std::string("\n");
+    std::string options = "Public";
+    for (int i = 1; i < 3; i++) {
+        options += std::string("\n") + user_names[room[i].room_addr];
     }
     lv_dropdown_set_options(dd, options.c_str());
     lv_obj_align(dd, LV_ALIGN_TOP_MID, 0, 0);
@@ -144,6 +160,11 @@ void nrf24l01_msg_receive_cb() {
                     self->room[_room].online = 23;
                 }
                 break;
+            case CHAT_INVITE:
+                if (nrf_buf[0] && nrf_buf[0] <= ROOM_NUMBER){
+                    ApplicationFSM::alert_cb((std::string(user_names[nrf_buf[0]]) + std::string(" Invited U")).c_str());
+                }
+                break;
         }
     }
 }
@@ -157,7 +178,7 @@ void nrf24l01_msg_tick_cb(){
         if (self->room[i].online) {
             self->room[i].online--;
             if (self->room[i].online == 0) {
-                ApplicationFSM::alert_cb((std::string(user_names[self->room[i].addr]) + std::string(" offline.")).c_str());
+                ApplicationFSM::alert_cb((std::string(user_names[self->room[i].room_addr]) + std::string(" offline.")).c_str());
             }
         }
     }

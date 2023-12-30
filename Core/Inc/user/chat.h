@@ -41,4 +41,5 @@ struct Chat : public Application {
     static void left_event_handler(lv_event_t * e);
     static void right_event_handler(lv_event_t * e);
     static void drop_event_handler(lv_event_t * e);
+    static void invite_event_handler(lv_event_t * e);
 };
