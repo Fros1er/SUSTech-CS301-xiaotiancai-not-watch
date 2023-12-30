@@ -66,6 +66,7 @@ uint8_t g_remote_sta = 0;
 uint32_t g_remote_data = 0; /* 红外接收到的数据 */
 uint8_t g_remote_cnt = 0;   /* 按键按下的次数 */
 
+static uint32_t prev_time;
 void remote_tim5_period_elapsed_cb() {
     if (g_remote_sta & 0x80) /* 上次有数据被接收到了 */
     {
@@ -93,7 +94,11 @@ void remote_tim5_period_elapsed_cb() {
                 g_remote_sta &= ~(1 << 6); /* 清除接收到有效按键标识 */
                 g_remote_cnt = 0;          /* 清除按键次数计数器 */
             } else {
-                remote_recv_cb(static_cast<RemoteKey>(sta));
+                auto now = HAL_GetTick();
+                if (now - prev_time > 100) {
+                    remote_recv_cb(static_cast<RemoteKey>(sta));
+                    prev_time = now;
+                }
             }
         }
 

@@ -10,10 +10,15 @@ class Album : public Application {
     std::vector<std::string> files;
 
     static void change_page(Album *self);
+    static Album *_instance;
 
    public:
     Album();
     static void go_left(lv_event_t *e);
     static void go_right(lv_event_t *e);
     void enter() override;
+
+    static Album *instance() {
+        return _instance;
+    }
 };

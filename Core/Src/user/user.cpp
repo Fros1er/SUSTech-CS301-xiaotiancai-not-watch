@@ -29,9 +29,6 @@
 #include "uart.h"
 #include "usart.h"
 
-void remote_recv_cb(RemoteKey key) {
-}
-
 void uart_transmit_debug_message(const char *msg) {
 #ifdef DEBUG
     uart_transmit_dma((uint8_t *)msg, strlen(msg));
@@ -75,7 +72,7 @@ void init() {
     nrf24l01_init();
     nrf_protocol_init();
     uart_transmit_debug_message("[OK] Initialized nrf24l01\n");
-    _check_init(nrf24l01_check(), "NRF24L01 Check");
+    // _check_init(nrf24l01_check(), "NRF24L01 Check");
     uart_transmit_debug_message("[Info] Entering main FSM\n");
 
     FATFS *fs = (FATFS *)lv_mem_alloc(sizeof(FATFS));
