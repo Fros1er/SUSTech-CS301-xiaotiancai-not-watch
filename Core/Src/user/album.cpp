@@ -1,10 +1,15 @@
 #include "album.h"
 
+#include "remote.hpp"
+
 #define HANDLE_ERR(x) \
     if ((err = (x)) != FR_OK) goto ERR_HANDLE
 
+Album * Album::_instance;
+
 Album::Album()
     : Application("Album") {
+    _instance = this;
     FRESULT err;
     std::string prefix = "0:/PICTURE/";
 
@@ -37,7 +42,6 @@ Album::Album()
 
     img = lv_img_create(_bg);
     lv_obj_align(img, LV_ALIGN_CENTER, 0, -40);
-    lv_obj_set_size(img, 200, 200);
 
     filename_label = lv_label_create(_bg);
     lv_obj_align(filename_label, LV_ALIGN_BOTTOM_MID, 0, -45);
@@ -56,14 +60,14 @@ void Album::enter() {
 }
 
 void Album::go_left(lv_event_t *e) {
-    Album *self = (Album *)e->user_data;
+    Album *self = Album::instance();
     self->cur--;
     if (self->cur < 0) self->cur = self->files.size() - 1;
     Album::change_page(self);
 }
 
 void Album::go_right(lv_event_t *e) {
-    Album *self = (Album *)e->user_data;
+    Album *self = Album::instance();
     self->cur++;
     if (self->cur >= self->files.size()) self->cur = 0;
     Album::change_page(self);
@@ -75,4 +79,21 @@ void Album::change_page(Album *self) {
     const char *path = self->files[self->cur].c_str();
     lv_img_set_src(self->img, path);
     lv_label_set_text_static(self->filename_label, path);
+}
+
+void remote_recv_cb(RemoteKey key) {
+    Album *self = Album::instance();
+    if (!self) {
+        return;
+    }
+    switch (key) {
+    case RIGHT:
+        self->go_right(nullptr);
+        break;
+    case LEFT:
+        self->go_left(nullptr);
+        break;
+    default:
+        break;
+    }
 }
