@@ -3,6 +3,15 @@
 #include "application.h"
 #include "dwt_delay.h"
 
+constexpr auto ROOM_NUMBER = 3;
+
+struct Room {
+    uint16_t msg_id;
+    uint8_t room_addr;
+    uint8_t online;
+    std::vector<std::string> msg;
+};
+
 struct Chat : public Application {
     lv_obj_t *ta;
     lv_obj_t *label;
@@ -10,9 +19,8 @@ struct Chat : public Application {
     uint8_t room_id = 0;
     static Chat *_instance;
 
-    std::unordered_map<uint8_t, std::vector<std::string>> room_msg_map;
-    std::unordered_map<uint8_t, uint32_t> room_msg_idx_map;
-    std::unordered_map<uint8_t, uint8_t> room_online_map;
+    Room room[ROOM_NUMBER];
+    uint8_t room_table[ROOM_NUMBER + 1];
 
     Chat();
 
@@ -28,8 +36,6 @@ struct Chat : public Application {
         nrf24l01_spi_init();
     }
     void tick() override;
-
-    void make_room(uint8_t room);
 
     static void textarea_event_handler(lv_event_t * e);
     static void left_event_handler(lv_event_t * e);

@@ -57,6 +57,7 @@ class ApplicationFSM {
     void register_application(Application *app);
     void switch_to(const std::string &name);
     void tick();
+    static void alert_cb(const char *msg);
     static ApplicationFSM &instance() {
         static ApplicationFSM instance;
         return instance;

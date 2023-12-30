@@ -73,6 +73,7 @@ void init() {
     int sd_mode = sd_init();
     uart_transmit_debug_message("[OK] Initialized SD Card\n");
     nrf24l01_init();
+    nrf_protocol_init();
     uart_transmit_debug_message("[OK] Initialized nrf24l01\n");
     _check_init(nrf24l01_check(), "NRF24L01 Check");
     uart_transmit_debug_message("[Info] Entering main FSM\n");
@@ -116,11 +117,13 @@ void tick() {
         return;
     }
     uint32_t now = HAL_GetTick();
-    if (now % 100 == 0) {
-        ApplicationFSM::instance().tick();
-        nrf_protocol_tick();
-        if (now % 500 == 0) {
-            led_update();
+    if (now % 10 == 0) {
+        if (now % 100 == 0) {
+            nrf_protocol_tick();
+            ApplicationFSM::instance().tick();
+            if (now % 500 == 0) {
+                led_update();
+            }
         }
     }
     button_update();

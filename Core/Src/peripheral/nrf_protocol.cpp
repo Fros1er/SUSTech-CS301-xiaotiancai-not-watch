@@ -6,8 +6,8 @@
 #include "dwt_delay.h"
 #include "nrf24l01.h"
 
-char device_name[4];
-const char *table = "0123456789abcedf";
+uint8_t device_name;
+uint32_t clk;
 
 void nrf_protocol_init() {
     uint32_t chip_id[3];
@@ -19,12 +19,15 @@ void nrf_protocol_init() {
     device_hash ^= device_hash >> 16;
     device_hash ^= device_hash >> 24;
     device_hash = (device_hash + 1) & 0xfe;
-
-    device_hash = 0x01;
-    device_name[3] = device_hash;
-    device_name[0] = table[device_hash >> 4];
-    device_name[1] = table[device_hash & 0xf];
-    RX_ADDRESS[1] = device_hash;
+    switch (device_hash) {
+        case 70:
+            device_name++;
+        case 154:
+            device_name++;
+        default:
+            device_name++;
+            break;
+    }
 }
 
 enum nrf24l01_mode_t {
@@ -32,58 +35,55 @@ enum nrf24l01_mode_t {
     RX_MODE = 0x1,
     TX_MODE = 0x2
 };
+
 nrf24l01_mode_t work_mode = NA_MODE;
 uint8_t nrf_buf[33];
 int packet_send_cnt = 0;
 int packet_recv_cnt = 0;
 
-uint8_t nrf_send_msg(const char *msg_ptr, uint8_t addr, uint8_t server) {
+uint8_t nrf_send_msg(const char *msg_ptr, uint8_t addr, uint8_t cmd) {
     int msg_len = strlen(msg_ptr);
+    RX_ADDRESS[1] = addr;
+    nrf24l01_rx_mode();
     TX_ADDRESS[1] = addr;
+    nrf24l01_tx_mode();
+    work_mode = TX_MODE;
 
     for (int i = 0; i < msg_len; i += 30) {
-        nrf_buf[0] = device_name[3];
-        nrf_buf[1] = server;
+        nrf_buf[0] = device_name;
+        nrf_buf[1] = cmd;
         strncpy((char *)nrf_buf + 2, msg_ptr, std::min(msg_len - i, 30));
-        nrf_buf[32] = 0;
+        nrf_buf[2 + std::min(msg_len - i, 30)] = 0;
         msg_ptr += 30;
+        packet_send_cnt++;
 
-        if (work_mode != TX_MODE) {
-            nrf24l01_tx_mode();
-            work_mode = TX_MODE;
-        }
-
-        for (int retry_cnt = 0; retry_cnt < 13; retry_cnt++) {
-            if (nrf24l01_tx_packet(nrf_buf) == 0) {
-                packet_send_cnt++;
-                return 0;
-            } else {
-                DWT_Delay_us(893);
-            }
+        if (nrf24l01_tx_packet(nrf_buf) == 0) {
+        } else {
+            return 1;
         }
     }
-    return 1;
+    return 0;
 }
 
 void nrf_protocol_tick() {
-    if (work_mode != RX_MODE) {
+    clk++;
+    if (work_mode != RX_MODE || RX_ADDRESS[1] != device_name) {
+        RX_ADDRESS[1] = device_name;
         nrf24l01_rx_mode();
         work_mode = RX_MODE;
     }
-    for (int i = 0; i < 73; i++) {
-        if (nrf24l01_rx_packet(nrf_buf) == 0) {
-            packet_recv_cnt++;
-            nrf24l01_msg_receive_cb();
-            break;
-        } else {
-            DWT_Delay_us(50);
-        }
+
+    if (nrf24l01_rx_packet(nrf_buf)==0){
+        packet_recv_cnt++;
+        nrf24l01_msg_receive_cb();
     }
-    for (int i = 1; i != device_name[3] && i < 4; i++) {
-        for (int retry = 1; retry; retry--) {
-            if (nrf_send_msg("Hello, I'm online.", i, 1) == 0) {
-                break;
+
+    if (clk % 10 == 0) {
+        for (int i = 1; i < 4; i++) {
+            if (i != device_name){
+                nrf_send_msg("Pong", i, NRF_PING);
             }
         }
     }
+    nrf24l01_msg_tick_cb();
 }

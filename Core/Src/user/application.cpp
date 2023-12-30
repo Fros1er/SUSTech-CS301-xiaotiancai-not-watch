@@ -5,6 +5,8 @@
 #include "nrf_protocol.hpp"
 
 static lv_style_t titlebar_style, bg_style;
+extern std::string user_names[];
+uint32_t timer;
 
 Application::Application(const std::string &name)
     : _name{name} {
@@ -18,10 +20,10 @@ Application::Application(const std::string &name)
 Menu::Menu()
     : Application("Menu") {
     info_label = lv_label_create(_bg);
-    lv_obj_align(info_label, LV_ALIGN_OUT_TOP_MID, 0, MENU_BAR_HEIGHT);
-    lv_obj_set_size(info_label, 220, 270);
+    lv_obj_align(info_label, LV_ALIGN_OUT_TOP_MID, 0, -10);
+    lv_obj_set_size(info_label, 200, 20);
     lv_label_set_recolor(info_label, true);
-    lv_label_set_text_fmt(info_label, "#0000ff %s# #ff00ff |ID:%s|# #ff0000 %s#", "|Time:here|", device_name, "|XTC");
+    lv_label_set_text_fmt(info_label, "#0000ff %s# #ff00ff %s# #ff0000@XTC ~#", "|Time:here|", user_names[device_name].c_str());
 }
 
 static void event_handler(lv_event_t *e) {
@@ -34,7 +36,7 @@ void Menu::register_application(const std::string &name) {
     lv_obj_add_event_cb(btn, event_handler, LV_EVENT_CLICKED, (void *)&name);
 
     lv_obj_t *label = lv_label_create(btn);
-    lv_label_set_text(label, name.c_str());
+    lv_label_set_text_static(label, name.c_str());
     lv_obj_center(label);
     app_num++;
 }
@@ -69,17 +71,27 @@ void ApplicationFSM::init() {
     lv_obj_set_height(_back_btn, MENU_BAR_HEIGHT - 10);
     lv_obj_set_style_shadow_width(_back_btn, 0, 0);
     lv_obj_t *label = lv_label_create(_back_btn);
-    lv_label_set_text(label, "Menu");
+    lv_label_set_text_static(label, "Menu");
     lv_obj_center(label);
 
     lv_style_init(&bg_style);
     lv_style_set_border_width(&bg_style, 0);
     lv_style_set_radius(&bg_style, 0);
+
+    timer = 0;
 }
 
 void ApplicationFSM::register_application(Application *app) {
     applications.emplace(app->_name, app);
     menu->register_application(app->_name);
+}
+
+void ApplicationFSM::alert_cb(const char* msg){
+    ApplicationFSM &fsm = ApplicationFSM::instance();
+    if (fsm.cur_app != nullptr) {
+        lv_label_set_text(fsm._title, msg);
+        timer = 50;
+    } 
 }
 
 void ApplicationFSM::switch_to(const std::string &name) {
@@ -103,5 +115,10 @@ void ApplicationFSM::switch_to(const std::string &name) {
 void ApplicationFSM::tick() {
     if (cur_app != nullptr) {
         cur_app->tick();
+        if (timer > 0) {
+            if (--timer == 0) {
+                lv_label_set_text_static(_title, cur_app->_name.c_str());
+            }
+        }
     }
 }
