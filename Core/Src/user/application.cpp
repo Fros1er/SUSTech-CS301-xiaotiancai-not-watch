@@ -90,6 +90,7 @@ void ApplicationFSM::alert_cb(const char* msg){
     ApplicationFSM &fsm = ApplicationFSM::instance();
     if (fsm.cur_app != nullptr) {
         lv_label_set_text(fsm._title, msg);
+        lv_obj_add_flag(fsm._back_btn, LV_OBJ_FLAG_HIDDEN);
         timer = 50;
     } 
 }
@@ -117,6 +118,7 @@ void ApplicationFSM::tick() {
         cur_app->tick();
         if (timer > 0) {
             if (--timer == 0) {
+                lv_obj_clear_flag(_back_btn, LV_OBJ_FLAG_HIDDEN);
                 lv_label_set_text_static(_title, cur_app->_name.c_str());
             }
         }

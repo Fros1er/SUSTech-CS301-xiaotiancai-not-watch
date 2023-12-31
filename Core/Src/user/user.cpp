@@ -143,6 +143,9 @@ void button_cb<key_wakeup>() {
 }
 
 void uart_receive_cb(uint16_t size) {
+    if (size > 2 && device_name==0xff) {
+        nrf_send_msg((char*)uart_buf+2, uart_buf[0], uart_buf[1]);
+    }
 }
 
 void *operator new(std::size_t sz) noexcept {
