@@ -4,7 +4,7 @@ Calculator *Calculator::_instance;
 
 void calc_answer_cb(const char *msg) {
     if (Calculator::instance()) {
-        lv_label_add_text(Calculator::instance()->label, msg);
+        lv_label_set_text_fmt(Calculator::instance()->label, "%s%s", lv_label_get_text(Calculator::instance()->label), msg);
     }
 }
 

@@ -1,5 +1,8 @@
+#pragma once
 #include "application.h"
 #include "nrf_protocol.hpp"
+
+void calc_answer_cb(const char *msg);
 
 struct Calculator : public Application {
     lv_obj_t *ta;
