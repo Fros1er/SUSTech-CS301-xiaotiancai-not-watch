@@ -15,8 +15,8 @@ void Calculator::clear_event_handler(lv_event_t *e) {
 
 void Calculator::textarea_event_handler(lv_event_t *e) {
     Calculator *self = (Calculator *)e->user_data;
-    const char *text = lv_textarea_get_text(self->ta);
-    nrf_send_msg(text, 0xff, CALC_REQUEST);
+    char *msg = (char *)lv_textarea_get_text(self->ta);
+    nrf_send_msg(msg, 0xff, CALC_REQUEST, 10);
     lv_textarea_set_text(self->label, "Calculating...\n");
 }
 
@@ -42,7 +42,7 @@ Calculator::Calculator()
     lv_obj_align(btn_clear, LV_ALIGN_TOP_RIGHT, 0, 90);
     lv_obj_set_size(btn_clear, 45, 40);
     lv_obj_t *bl_text = lv_label_create(btn_clear);
-    lv_label_set_text_static(bl_text, "Invite");
+    lv_label_set_text_static(bl_text, "Clear");
     lv_obj_center(bl_text);
 
 }

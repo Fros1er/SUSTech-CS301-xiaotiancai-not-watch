@@ -11,7 +11,7 @@ extern int packet_recv_cnt;
 
 void nrf_protocol_init();
 void nrf_protocol_tick();
-uint8_t nrf_send_msg(const char *msg_ptr, uint8_t addr, uint8_t cmd);
+uint8_t nrf_send_msg(const char *msg_ptr, uint8_t addr, uint8_t cmd, uint8_t max_try = 1);
 void nrf24l01_msg_receive_cb();
 void nrf24l01_msg_tick_cb();
 

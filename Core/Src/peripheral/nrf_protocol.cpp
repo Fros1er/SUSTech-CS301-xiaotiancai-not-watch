@@ -43,7 +43,7 @@ uint8_t nrf_buf[33];
 int packet_send_cnt = 0;
 int packet_recv_cnt = 0;
 
-uint8_t nrf_send_msg(const char *msg_ptr, uint8_t addr, uint8_t cmd) {
+uint8_t nrf_send_msg(const char *msg_ptr, uint8_t addr, uint8_t cmd, uint8_t max_try) {
     int msg_len = strlen(msg_ptr);
     RX_ADDRESS[1] = addr;
     nrf24l01_rx_mode();
@@ -59,9 +59,12 @@ uint8_t nrf_send_msg(const char *msg_ptr, uint8_t addr, uint8_t cmd) {
         msg_ptr += 30;
         packet_send_cnt++;
 
-        if (nrf24l01_tx_packet(nrf_buf) == 0) {
-        } else {
-            return 1;
+        for (int j = 0; j < max_try; j++) {
+            if (nrf24l01_tx_packet(nrf_buf) == 0) {
+                break;
+            } else {
+                DWT_Delay_us(13);
+            }
         }
     }
     return 0;

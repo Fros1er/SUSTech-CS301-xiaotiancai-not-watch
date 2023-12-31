@@ -29,11 +29,11 @@ void Chat::textarea_event_handler(lv_event_t *e) {
     Chat *self = (Chat *)e->user_data;
     char *msg = (char *)lv_textarea_get_text(self->ta);
     if (self->room_id) {
-        nrf_send_msg(msg, self->room[self->room_id].room_addr, CHAT_MSG);
+        nrf_send_msg(msg, self->room[self->room_id].room_addr, CHAT_MSG, 5);
     } else {
         for (int i = 1; i < ROOM_NUMBER; i++) {
             if (self->room[i].online){
-                nrf_send_msg(msg, self->room[i].room_addr, CHAT_BROADCAST);
+                nrf_send_msg(msg, self->room[i].room_addr, CHAT_BROADCAST, 5);
             }
         }
     }
