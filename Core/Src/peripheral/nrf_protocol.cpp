@@ -20,6 +20,8 @@ void nrf_protocol_init() {
     device_hash ^= device_hash >> 24;
     device_hash = (device_hash + 1) & 0xfe;
     switch (device_hash) {
+        case 78:
+            device_name++;
         case 70:
             device_name++;
         case 154:
@@ -79,7 +81,7 @@ void nrf_protocol_tick() {
     }
 
     if (clk % 10 == 0) {
-        for (int i = 1; i < 4; i++) {
+        for (int i = 1; i < 5 && device_name!=0xff; i++) {
             if (i != device_name){
                 nrf_send_msg("Pong", i, NRF_PING);
             }

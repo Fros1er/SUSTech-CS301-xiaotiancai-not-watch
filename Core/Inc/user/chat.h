@@ -3,7 +3,7 @@
 #include "application.h"
 #include "dwt_delay.h"
 
-constexpr auto ROOM_NUMBER = 3;
+constexpr auto ROOM_NUMBER = 4;
 
 struct Room {
     uint16_t msg_id;
@@ -16,6 +16,8 @@ struct Chat : public Application {
     lv_obj_t *ta;
     lv_obj_t *label;
     lv_obj_t *dd;
+    lv_obj_t *de;
+
     uint8_t room_id = 0;
     static Chat *_instance;
 
@@ -42,4 +44,5 @@ struct Chat : public Application {
     static void right_event_handler(lv_event_t * e);
     static void drop_event_handler(lv_event_t * e);
     static void invite_event_handler(lv_event_t * e);
+    static void emoji_event_handler(lv_event_t *e);
 };
