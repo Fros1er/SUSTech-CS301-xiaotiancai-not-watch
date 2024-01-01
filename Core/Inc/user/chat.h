@@ -3,6 +3,7 @@
 #include "application.h"
 #include "dwt_delay.h"
 #include "calc.h"
+#include "balc.h"
 
 constexpr auto ROOM_NUMBER = 4;
 

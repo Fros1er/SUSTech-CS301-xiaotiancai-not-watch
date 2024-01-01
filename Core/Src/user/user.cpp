@@ -23,7 +23,6 @@
 #include "nrf_protocol.hpp"
 #include "remote.hpp"
 #include "sd.h"
-#include "server.h"
 #include "stm32f1xx_hal.h"
 #include "tim.h"
 #include "uart.h"
@@ -99,14 +98,11 @@ void init() {
     // lv_obj_align(label1, LV_ALIGN_CENTER, 0, -40);
     auto &fsm = ApplicationFSM::instance();
     fsm.init();  // init other apps after this
+    fsm.register_application(new Chat());
     fsm.register_application(new Calculator());
-    if (device_name != SERVER_ADDR) {
-        fsm.register_application(new Chat());
-    }
+    fsm.register_application(new Balculator());
     if (!sd_mode) {
         fsm.register_application(new Album());
-    } else {
-        fsm.register_application(new Server());
     }
     fsm.register_application(new MemoryMonitor());
     fsm.switch_to("Menu");
@@ -149,7 +145,7 @@ void button_cb<key_wakeup>() {
 
 void uart_receive_cb(uint16_t size) {
     if (size > 2 && device_name==SERVER_ADDR) {
-        nrf_send_msg((char*)uart_buf+2, uart_buf[0], uart_buf[1], 100);
+        nrf_send_msg((char*)uart_buf+2, uart_buf[0], uart_buf[1], 255);
     }
 }
 

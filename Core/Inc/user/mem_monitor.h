@@ -1,5 +1,6 @@
 #include "application.h"
 #include "ff.h"
+#include "nrf_protocol.hpp"
 #include <vector>
 
 class MemoryMonitor : public Application {

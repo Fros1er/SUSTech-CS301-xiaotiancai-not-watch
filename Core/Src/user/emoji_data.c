@@ -1,4 +1,3 @@
-#pragma once
 #include "lvgl.h"
 #define LV_ATTRIBUTE_MEM_ALIGN
 

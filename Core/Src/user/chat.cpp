@@ -212,6 +212,14 @@ void nrf24l01_msg_receive_cb() {
         case CALC_ANSWER:
             calc_answer_cb((char *)nrf_buf + 2);
             break;
+        case BALC_ANSWER:
+            balc_answer_cb((char *)nrf_buf + 2);
+            break;
+        default:
+            uart_transmit_message("[Server A]");
+            uart_transmit_dma(nrf_buf, 32);
+            uart_transmit_message("[Server B]");
+            break;
     }
 }
 

@@ -29,7 +29,6 @@ void nrf_protocol_init() {
             device_name++;
         default:
             device_name++;
-            break;
     }
 }
 
@@ -84,18 +83,11 @@ void nrf_protocol_tick() {
 
     if (nrf24l01_rx_packet(nrf_buf)==0){
         packet_recv_cnt++;
-        if (device_name == SERVER_ADDR) { 
-            memcpy(_server_buf, nrf_buf, 32);
-            uart_transmit_message("[Server A]");
-            uart_transmit_dma(_server_buf, 32);
-            uart_transmit_message("[Server B]");
-        } else {
-            nrf24l01_msg_receive_cb();
-        }
+        nrf24l01_msg_receive_cb();
     }
 
     if (clk % 10 == 0) {
-        for (int i = 1; i < 5 && device_name!=SERVER_ADDR; i++) {
+        for (int i = 1; i < 5; i++) {
             if (i != device_name){
                 nrf_send_msg("Pong", i, NRF_PING);
             }

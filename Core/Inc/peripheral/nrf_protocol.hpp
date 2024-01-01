@@ -27,4 +27,6 @@ enum nrf24l01_cmd_t {
     CHAT_INVITE,
     CALC_ANSWER,
     CALC_REQUEST,
+    CALC_BINARY_REQUEST,
+    BALC_ANSWER,
 };

@@ -25,7 +25,7 @@ Menu::Menu()
     lv_obj_align(info_label, LV_ALIGN_TOP_MID, 60, -10);
     lv_obj_set_height(info_label, 20);
     lv_label_set_recolor(info_label, true);
-    lv_label_set_text_fmt(info_label, "#ff00ff %s# #ff0000@XTC ~#", user_names[device_name].c_str());
+    lv_label_set_text_fmt(info_label, "#ff00ff %s#", user_names[device_name].c_str());  // #ff0000 @XTC~#
 
     time_label = lv_label_create(_bg);
     update_time();
