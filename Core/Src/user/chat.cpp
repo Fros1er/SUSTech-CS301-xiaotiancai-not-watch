@@ -135,7 +135,8 @@ Chat::Chat()
 
     label = lv_label_create(_bg);
     lv_obj_align(label, LV_ALIGN_TOP_LEFT, 0, 40);
-    lv_obj_set_size(label, 165, 50);
+    lv_obj_set_size(label, 165, 40);
+    lv_label_set_long_mode(label, LV_LABEL_LONG_SCROLL);
     lv_font_t * imgfont = lv_imgfont_create(24, get_imgfont_path);
     if(imgfont != NULL) {
         imgfont->fallback = LV_FONT_DEFAULT;

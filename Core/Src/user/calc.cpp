@@ -27,6 +27,7 @@ Calculator::Calculator()
     label = lv_label_create(_bg);
     lv_obj_align(label, LV_ALIGN_TOP_LEFT, 0, 0);
     lv_obj_set_size(label, 200, 50);
+    lv_label_set_long_mode(label, LV_LABEL_LONG_SCROLL);
     lv_label_set_text(label, "Welcome to Calculator!");
 
     ta = lv_textarea_create(_bg);
