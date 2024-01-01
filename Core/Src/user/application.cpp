@@ -19,13 +19,12 @@ Application::Application(const std::string &name)
 Menu::Menu()
     : Application("Menu") {
     time_label = lv_label_create(_bg);
-    rtc_get_time();
     update_time();
     lv_obj_set_align(time_label, LV_ALIGN_TOP_MID);
 }
 
 void Menu::update_time() {
-    snprintf(time_buf, 32, "%04d/%02d/%02d %02d:%02d:%02d", rtc_calendar.year, rtc_calendar.month, rtc_calendar.date, rtc_calendar.hour, rtc_calendar.min, rtc_calendar.sec);
+    snprintf(time_buf, 32, "20%02d/%02d/%02d %02d:%02d:%02d", rtc_date.Year, rtc_date.Month, rtc_date.Date, rtc_time.Hours, rtc_time.Minutes, rtc_time.Seconds);
     lv_label_set_text_static(time_label, time_buf);
 }
 
