@@ -31,9 +31,9 @@ Balculator::Balculator()
     lv_label_set_text(label, "Welcome to Balculator!");
 
     ta = lv_textarea_create(_bg);
-    lv_obj_align(ta, LV_ALIGN_TOP_LEFT, 0, 50);
-    lv_obj_set_size(ta, 165, 90);
-    lv_textarea_set_placeholder_text(ta, "114*514+1919");
+    lv_obj_align(ta, LV_ALIGN_TOP_LEFT, 0, 100);
+    lv_obj_set_size(ta, 165, 30);
+    lv_textarea_set_placeholder_text(ta, "1.048596");
     lv_obj_add_event_cb(ta, balc_event_handler, LV_EVENT_READY, this);
     
     lv_obj_t *kb = lv_keyboard_create(_bg);

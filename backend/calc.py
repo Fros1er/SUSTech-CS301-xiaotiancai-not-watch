@@ -41,12 +41,12 @@ with open('res.txt', 'w') as f:
 
 def calc(dat):
     dat = str(dat)
-    allow_chars = '0123456789+-*%/^xyz()=\n '
+    allow_chars = '0123456789+-*%/^xyz().=\n '
     if not all(c in allow_chars for c in dat):
         for i in range(len(dat)):
             if dat[i] not in allow_chars:
-                return f"Invalid char: {dat[i]}".encode()
-        return b"Invalid input!"
+                return f"Invalid char: {dat[i]}"
+        return "Invalid input!"
     # make 1^2 to pow(1, 2)
     dat = re.sub(r'([\dxyz]+)\^(\d+)', r'pow(\1, \2)', dat)
     # make 1x to 1*x
@@ -60,20 +60,20 @@ def calc(dat):
             dat = re.sub(r"=", r"==", dat)
             return solve(dat)
     except:
-        return b"Error!"
+        return "Error!"
 
 
 def binary_calc(dat):
     dat = str(dat)
     allow_chars = '01+-*/%^()\n '
     if not all(c in allow_chars for c in dat):
-        return b"Invalid input!"
+        return "Invalid input!"
     dat = re.sub(r'([\dxyz]+)\^(\d+)', r'pow(\1, \2)', dat)
     dat = re.sub(r'(\d+)', r'0b\1', dat)
     try:
         return eval(dat)
     except:
-        return b"Error!"
+        return "Error!"
 
 
 com_name = str(list(serial.tools.list_ports.comports())[0])[:4]
@@ -86,7 +86,7 @@ work = b""
 
 def send_packet(target_addr, _cmd, _msg):
     for i in range(0, len(_msg), 29):
-        raw = struct.pack('b', target_addr) + struct.pack('b', _cmd) + str(_msg[i:i+29]).encode() + b'\x00'
+        raw = struct.pack('b', target_addr) + struct.pack('b', _cmd) + str(_msg[i:i + 29]).encode() + b'\x00'
         print(f"Sending: {raw}")
         com.write(raw)
 
@@ -101,6 +101,7 @@ while 1:
         print(f"Received: {msg}")
         try:
             msg = msg[:msg.index(b'\x00')]
+            print(f"Handel: {msg[2:]}")
             if msg[1] == 0x05:  # CALC_REQUEST
                 r = calc(msg[2:].decode())
                 print(f"Result: {r}")
