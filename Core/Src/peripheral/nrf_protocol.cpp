@@ -43,7 +43,7 @@ uint8_t nrf_buf[33];
 int packet_send_cnt = 0;
 int packet_recv_cnt = 0;
 
-uint8_t nrf_send_msg(const char *msg_ptr, uint8_t addr, uint8_t cmd, uint8_t max_try) {
+uint8_t nrf_send_msg(const char *msg_ptr, uint8_t addr, uint8_t cmd, uint16_t max_try) {
     int msg_len = strlen(msg_ptr);
     RX_ADDRESS[1] = addr;
     nrf24l01_rx_mode();

@@ -1,6 +1,6 @@
 #pragma once
 #include "nrf24l01.h"
-
+#include <string>
 #include "uart.h"
 #include "usart.h"
 
@@ -16,7 +16,7 @@ constexpr uint8_t SERVER_ADDR = 0x4;
 
 void nrf_protocol_init();
 void nrf_protocol_tick();
-uint8_t nrf_send_msg(const char *msg_ptr, uint8_t addr, uint8_t cmd, uint8_t max_try = 1);
+uint8_t nrf_send_msg(const char *msg_ptr, uint8_t addr, uint8_t cmd, uint16_t max_try = 1);
 void nrf24l01_msg_receive_cb();
 void nrf24l01_msg_tick_cb();
 

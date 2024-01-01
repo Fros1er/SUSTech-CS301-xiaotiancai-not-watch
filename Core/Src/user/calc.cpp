@@ -4,8 +4,7 @@ Calculator *Calculator::_instance;
 
 void calc_answer_cb(const char *msg) {
     if (Calculator::instance()) {
-        lv_label_set_text_fmt(Calculator::instance()->label, "%s%s", lv_label_get_text(Calculator::instance()->label), msg);
-        // lv_label_set_text_fmt(Calculator::instance()->label, msg);
+        lv_label_set_text(Calculator::instance()->label, std::string(lv_label_get_text(Calculator::instance()->label)) + std::string(msg));
     }
 }
 
@@ -17,8 +16,8 @@ void Calculator::clear_event_handler(lv_event_t *e) {
 void Calculator::calc_event_handler(lv_event_t *e) {
     Calculator *self = (Calculator *)e->user_data;
     char *msg = (char *)lv_textarea_get_text(self->ta);
-    nrf_send_msg(msg, SERVER_ADDR, CALC_REQUEST, 255);
-    lv_label_set_text(self->label, "Wait..\n");
+    nrf_send_msg(msg, SERVER_ADDR, CALC_REQUEST, 2550);
+    lv_label_set_text(self->label, "");
 }
 
 Calculator::Calculator()

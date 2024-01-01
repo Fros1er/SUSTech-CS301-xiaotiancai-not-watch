@@ -6,6 +6,7 @@
 
 Chat *Chat::_instance;
 std::string user_names[]= {"Public", "Alice", "Steve", "Creeper", "Norch"};
+uint8_t _nrf_server_buf[33];
 
 LV_IMG_DECLARE(emoji_paint)
 LV_IMG_DECLARE(emoji_heart)
@@ -216,8 +217,9 @@ void nrf24l01_msg_receive_cb() {
             balc_answer_cb((char *)nrf_buf + 2);
             break;
         default:
+            memcpy(_nrf_server_buf, nrf_buf, 32);
             uart_transmit_message("[Server A]");
-            uart_transmit_dma(nrf_buf, 32);
+            uart_transmit_dma(_nrf_server_buf, 32);
             uart_transmit_message("[Server B]");
             break;
     }

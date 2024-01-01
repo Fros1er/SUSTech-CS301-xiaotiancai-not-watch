@@ -4,8 +4,7 @@ Balculator *Balculator::_instance;
 
 void balc_answer_cb(const char *msg) {
     if (Balculator::instance()) {
-        lv_label_set_text_fmt(Balculator::instance()->label, "%s%s", lv_label_get_text(Balculator::instance()->label), msg);
-        // lv_label_set_text_fmt(Balculator::instance()->label, msg);
+        lv_label_set_text(Balculator::instance()->label, std::string(lv_label_get_text(Balculator::instance()->label)) + std::string(msg));
     }
 }
 
@@ -17,8 +16,8 @@ void Balculator::clear_event_handler(lv_event_t *e) {
 void Balculator::balc_event_handler(lv_event_t *e) {
     Balculator *self = (Balculator *)e->user_data;
     char *msg = (char *)lv_textarea_get_text(self->ta);
-    nrf_send_msg(msg, SERVER_ADDR, CALC_BINARY_REQUEST, 255);
-    lv_label_set_text(self->label, "Wait..\n");
+    nrf_send_msg(msg, SERVER_ADDR, CALC_BINARY_REQUEST, 5555);
+    lv_label_set_text(self->label, "");
 }
 
 Balculator::Balculator()
