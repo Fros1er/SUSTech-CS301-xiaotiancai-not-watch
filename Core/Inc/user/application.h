@@ -37,10 +37,12 @@ class Menu : public Application {
     friend class ApplicationFSM;
     void register_application(const std::string &name);
     int app_num = 0;
-    lv_obj_t *info_label;
+    lv_obj_t *info_label, *time_label;
+    char time_buf[32];
 
    public:
     Menu();
+    void update_time();
 };
 
 class ApplicationFSM {

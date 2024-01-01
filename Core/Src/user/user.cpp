@@ -67,6 +67,9 @@ void init() {
     uart_transmit_debug_message("[OK] Initialized led\n");
     button_init();
     uart_transmit_debug_message("[OK] Initialized button\n");
+    nrf24l01_init();
+    uart_transmit_debug_message("[OK] Initialized nrf24l01\n");
+    // _check_init(nrf24l01_check(), "NRF24L01 Check");
     int sd_mode = sd_init();
     uart_transmit_debug_message("[OK] Initialized SD Card\n");
     nrf24l01_init();
@@ -143,8 +146,8 @@ void button_cb<key_wakeup>() {
 }
 
 void uart_receive_cb(uint16_t size) {
-    if (size > 2 && device_name==0xff) {
-        nrf_send_msg((char*)uart_buf+2, uart_buf[0], uart_buf[1], 10);
+    if (size > 2 && device_name == 0xff) {
+        nrf_send_msg((char *)uart_buf + 2, uart_buf[0], uart_buf[1], 10);
     }
 }
 
