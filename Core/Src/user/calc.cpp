@@ -16,7 +16,7 @@ void Calculator::clear_event_handler(lv_event_t *e) {
 void Calculator::calc_event_handler(lv_event_t *e) {
     Calculator *self = (Calculator *)e->user_data;
     char *msg = (char *)lv_textarea_get_text(self->ta);
-    nrf_send_msg(msg, SERVER_ADDR, CALC_REQUEST, 2550);
+    nrf_send_msg(msg, SERVER_ADDR, CALC_REQUEST, 55555);
     lv_label_set_text(self->label, "");
 }
 
