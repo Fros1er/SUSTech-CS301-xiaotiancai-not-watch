@@ -103,7 +103,7 @@ void ApplicationFSM::alert_cb(const char* msg){
     if (fsm.cur_app != nullptr) {
         lv_label_set_text(fsm._title, msg);
         lv_obj_add_flag(fsm._back_btn, LV_OBJ_FLAG_HIDDEN);
-        timer = 50;
+        timer = 23;  // 2.3s
     } 
 }
 
