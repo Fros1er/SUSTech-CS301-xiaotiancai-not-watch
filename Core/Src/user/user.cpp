@@ -67,6 +67,9 @@ void init() {
     uart_transmit_debug_message("[OK] Initialized led\n");
     button_init();
     uart_transmit_debug_message("[OK] Initialized button\n");
+    nrf24l01_init();
+    uart_transmit_debug_message("[OK] Initialized nrf24l01\n");
+    _check_init(nrf24l01_check(), "NRF24L01 Check");
     int sd_mode = sd_init();
     uart_transmit_debug_message("[OK] Initialized SD Card\n");
     nrf24l01_init();

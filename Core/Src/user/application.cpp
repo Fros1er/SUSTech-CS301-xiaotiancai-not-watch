@@ -3,6 +3,8 @@
 #include <string>
 
 #include "nrf_protocol.hpp"
+#include "stm32f1xx_hal.h"
+#include "user_rtc.h"
 
 static lv_style_t titlebar_style, bg_style;
 extern std::string user_names[];
@@ -20,10 +22,20 @@ Application::Application(const std::string &name)
 Menu::Menu()
     : Application("Menu") {
     info_label = lv_label_create(_bg);
-    lv_obj_align(info_label, LV_ALIGN_OUT_TOP_MID, 0, -10);
-    lv_obj_set_size(info_label, 200, 20);
+    lv_obj_align(info_label, LV_ALIGN_TOP_MID, 60, -10);
+    lv_obj_set_height(info_label, 20);
     lv_label_set_recolor(info_label, true);
-    lv_label_set_text_fmt(info_label, "#0000ff %s# #ff00ff %s# #ff0000@XTC ~#", "|Time:here|", user_names[device_name].c_str());
+    lv_label_set_text_fmt(info_label, "#ff00ff %s# #ff0000@XTC ~#", user_names[device_name].c_str());
+
+    time_label = lv_label_create(_bg);
+    update_time();
+    lv_obj_align(time_label, LV_ALIGN_TOP_MID, -40, -10);
+    lv_obj_set_height(time_label, 20);
+}
+
+void Menu::update_time() {
+    snprintf(time_buf, 32, "20%02d/%02d/%02d %02d:%02d:%02d", rtc_date.Year, rtc_date.Month, rtc_date.Date, rtc_time.Hours, rtc_time.Minutes, rtc_time.Seconds);
+    lv_label_set_text_static(time_label, time_buf);
 }
 
 static void event_handler(lv_event_t *e) {
@@ -122,5 +134,14 @@ void ApplicationFSM::tick() {
                 lv_label_set_text_static(_title, cur_app->_name.c_str());
             }
         }
+    }
+}
+
+void rtc_alarm_cb() {
+}
+void rtc_sec_cb() {
+    auto &menu = ApplicationFSM::instance().menu;
+    if (menu != nullptr) {
+        menu->update_time();
     }
 }

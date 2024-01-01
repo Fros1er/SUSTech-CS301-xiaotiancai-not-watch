@@ -332,7 +332,6 @@ uint8_t eeprom_read_byte(uint8_t Address) {
  * @param DataLen: 接收数据长度
  */
 void eeprom_read_bytes(uint8_t addr, uint8_t *dst, uint8_t len) {
-    uint8_t Data;
 
     IIC_StartSignal();  // 发送开始信号
 
@@ -378,12 +377,12 @@ void eeprom_read_bytes(uint8_t addr, uint8_t *dst, uint8_t len) {
 
     IIC_StopSignal();  // 发送停止信号
 
-    return Data;  // 返回接收到的数据
+    return;  // 返回接收到的数据
 }
 
 void eeprom_save_touch_calib(uint8_t *data) {
     eeprom_write_byte(16, 0xc7);
-    eeprom_write_bytes(17, *data, 12);
+    eeprom_write_bytes(17, data, 12);
 }
 
 uint8_t eeprom_load_touch_calib(uint8_t *data) {

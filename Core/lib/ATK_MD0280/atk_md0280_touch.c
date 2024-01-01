@@ -164,7 +164,7 @@ static void atk_md0280_touch_calibration(void)
         g_atk_md0280_touch_sta.center.x = 2084;
         g_atk_md0280_touch_sta.center.y = 2029;
 
-        eeprom_save_touch_calib(&g_atk_md0280_touch_sta);
+        eeprom_save_touch_calib((uint8_t *)&g_atk_md0280_touch_sta);
         atk_md0280_clear(ATK_MD0280_WHITE);
 
         return;
@@ -249,7 +249,7 @@ static void atk_md0280_touch_calibration(void)
                     g_atk_md0280_touch_sta.center.x = point[4].x;
                     g_atk_md0280_touch_sta.center.y = point[4].y;
 
-                    eeprom_save_touch_calib(&g_atk_md0280_touch_sta);
+                    eeprom_save_touch_calib((uint8_t *)&g_atk_md0280_touch_sta);
                     
                     atk_md0280_clear(ATK_MD0280_GREEN);
                     HAL_Delay(1000);
