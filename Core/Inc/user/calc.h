@@ -14,7 +14,7 @@ struct Calculator : public Application {
     }
 
     public:
-    static void textarea_event_handler(lv_event_t * e);
+    static void calc_event_handler(lv_event_t * e);
     static void clear_event_handler(lv_event_t * e);
     static Calculator *_instance;
     static Calculator *instance() {

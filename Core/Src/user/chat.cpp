@@ -183,41 +183,35 @@ void nrf24l01_msg_receive_cb() {
     if (!self) {
         return;
     }
-    if (RX_ADDRESS[1] == 0xff) {  // I am server
-        uart_transmit_message("[Server A]");
-        uart_transmit_dma(nrf_buf, 32);
-        uart_transmit_message("[Server B]");
-    } else{
-        switch(nrf_buf[1]){
-            case CHAT_MSG:
-                if (nrf_buf[0] && nrf_buf[0] <= ROOM_NUMBER){
-                    uint8_t _room = self->room_table[nrf_buf[0]];
-                    self->room[_room].msg.push_back(user_names[nrf_buf[0]] + std::string(": ") + std::string((char *)nrf_buf + 2));
-                    self->room[_room].msg_id = self->room[_room].msg.size() - 1;
+    switch(nrf_buf[1]){
+        case CHAT_MSG:
+            if (nrf_buf[0] && nrf_buf[0] <= ROOM_NUMBER){
+                uint8_t _room = self->room_table[nrf_buf[0]];
+                self->room[_room].msg.push_back(user_names[nrf_buf[0]] + std::string(": ") + std::string((char *)nrf_buf + 2));
+                self->room[_room].msg_id = self->room[_room].msg.size() - 1;
+            }
+            break;
+        case CHAT_BROADCAST:
+            self->room[0].msg.push_back(user_names[nrf_buf[0]] + std::string(": ") + std::string((char *)nrf_buf + 2));
+            self->room[0].msg_id = self->room[0].msg.size() - 1;
+            break;
+        case NRF_PING:
+            if (nrf_buf[0] && nrf_buf[0] <= ROOM_NUMBER){
+                uint8_t _room = self->room_table[nrf_buf[0]];
+                if (!self->room[_room].online){
+                    ApplicationFSM::alert_cb((std::string(user_names[nrf_buf[0]]) + std::string(" online!")).c_str());
                 }
-                break;
-            case CHAT_BROADCAST:
-                self->room[0].msg.push_back(user_names[nrf_buf[0]] + std::string(": ") + std::string((char *)nrf_buf + 2));
-                self->room[0].msg_id = self->room[0].msg.size() - 1;
-                break;
-            case NRF_PING:
-                if (nrf_buf[0] && nrf_buf[0] <= ROOM_NUMBER){
-                    uint8_t _room = self->room_table[nrf_buf[0]];
-                    if (!self->room[_room].online){
-                        ApplicationFSM::alert_cb((std::string(user_names[nrf_buf[0]]) + std::string(" online!")).c_str());
-                    }
-                    self->room[_room].online = 83;
-                }
-                break;
-            case CHAT_INVITE:
-                if (nrf_buf[0] && nrf_buf[0] <= ROOM_NUMBER){
-                    ApplicationFSM::alert_cb((std::string(user_names[nrf_buf[0]]) + std::string(" Invited U")).c_str());
-                }
-                break;
-            case CALC_ANSWER:
-                calc_answer_cb((char *)nrf_buf + 2);
-                break;
-        }
+                self->room[_room].online = 83;
+            }
+            break;
+        case CHAT_INVITE:
+            if (nrf_buf[0] && nrf_buf[0] <= ROOM_NUMBER){
+                ApplicationFSM::alert_cb((std::string(user_names[nrf_buf[0]]) + std::string(" Invited U")).c_str());
+            }
+            break;
+        case CALC_ANSWER:
+            calc_answer_cb((char *)nrf_buf + 2);
+            break;
     }
 }
 

@@ -72,7 +72,7 @@ void init() {
     nrf24l01_init();
     nrf_protocol_init();
     uart_transmit_debug_message("[OK] Initialized nrf24l01\n");
-    // _check_init(nrf24l01_check(), "NRF24L01 Check");
+    _check_init(nrf24l01_check(), "NRF24L01 Check");
     uart_transmit_debug_message("[Info] Entering main FSM\n");
 
     FATFS *fs = (FATFS *)lv_mem_alloc(sizeof(FATFS));
@@ -97,7 +97,9 @@ void init() {
     auto &fsm = ApplicationFSM::instance();
     fsm.init();  // init other apps after this
     fsm.register_application(new Calculator());
-    fsm.register_application(new Chat());
+    if (device_name != SERVER_ADDR) {
+        fsm.register_application(new Chat());
+    }
     if (!sd_mode) {
         fsm.register_application(new Album());
     } else {
@@ -143,8 +145,8 @@ void button_cb<key_wakeup>() {
 }
 
 void uart_receive_cb(uint16_t size) {
-    if (size > 2 && device_name==0xff) {
-        nrf_send_msg((char*)uart_buf+2, uart_buf[0], uart_buf[1], 10);
+    if (size > 2 && device_name==SERVER_ADDR) {
+        nrf_send_msg((char*)uart_buf+2, uart_buf[0], uart_buf[1], 100);
     }
 }
 

@@ -8,6 +8,7 @@
 
 uint8_t device_name;
 uint32_t clk;
+uint8_t _server_buf[33];
 
 void nrf_protocol_init() {
     uint32_t chip_id[3];
@@ -52,21 +53,24 @@ uint8_t nrf_send_msg(const char *msg_ptr, uint8_t addr, uint8_t cmd, uint8_t max
     work_mode = TX_MODE;
 
     for (int i = 0; i < msg_len; i += 30) {
+        strncpy((char *)nrf_buf + 2, msg_ptr, std::min(msg_len - i, 30));
         nrf_buf[0] = device_name;
         nrf_buf[1] = cmd;
-        strncpy((char *)nrf_buf + 2, msg_ptr, std::min(msg_len - i, 30));
         nrf_buf[2 + std::min(msg_len - i, 30)] = 0;
         msg_ptr += 30;
-        packet_send_cnt++;
 
         for (int j = 0; j < max_try; j++) {
             if (nrf24l01_tx_packet(nrf_buf) == 0) {
+                packet_send_cnt++;
                 break;
             } else {
                 DWT_Delay_us(13);
             }
         }
     }
+
+    RX_ADDRESS[1] = device_name;
+    nrf24l01_rx_mode();
     return 0;
 }
 
@@ -80,11 +84,18 @@ void nrf_protocol_tick() {
 
     if (nrf24l01_rx_packet(nrf_buf)==0){
         packet_recv_cnt++;
-        nrf24l01_msg_receive_cb();
+        if (device_name == SERVER_ADDR) { 
+            memcpy(_server_buf, nrf_buf, 32);
+            uart_transmit_message("[Server A]");
+            uart_transmit_dma(_server_buf, 32);
+            uart_transmit_message("[Server B]");
+        } else {
+            nrf24l01_msg_receive_cb();
+        }
     }
 
     if (clk % 10 == 0) {
-        for (int i = 1; i < 5 && device_name!=0xff; i++) {
+        for (int i = 1; i < 5 && device_name!=SERVER_ADDR; i++) {
             if (i != device_name){
                 nrf_send_msg("Pong", i, NRF_PING);
             }

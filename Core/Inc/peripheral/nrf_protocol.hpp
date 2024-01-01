@@ -1,6 +1,9 @@
 #pragma once
 #include "nrf24l01.h"
 
+#include "uart.h"
+#include "usart.h"
+
 extern uint8_t TX_ADDRESS[TX_ADR_WIDTH];
 extern uint8_t RX_ADDRESS[RX_ADR_WIDTH];
 extern uint8_t device_name;
@@ -8,6 +11,8 @@ extern uint8_t nrf_buf[33];
 extern const char *table;
 extern int packet_send_cnt; 
 extern int packet_recv_cnt; 
+
+constexpr uint8_t SERVER_ADDR = 0x4;
 
 void nrf_protocol_init();
 void nrf_protocol_tick();

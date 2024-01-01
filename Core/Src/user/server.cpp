@@ -10,7 +10,8 @@ Server::Server() : Application("Server") {
 
 void Server::enter() {
     old_name = device_name;
-    device_name = 0xff;
+    device_name = SERVER_ADDR;
+    nrf24l01_rx_mode();
 }
 
 void Server::exit() {
@@ -18,7 +19,7 @@ void Server::exit() {
 }
 
 void Server::tick() {
-    lv_label_set_text_fmt(label, "Server status\nPacket send: %d\nPacket recv: %d\n", 
+    lv_label_set_text_fmt(label, "Server(%p->%p) status\nPacket send: %d\nPacket recv: %d\n", device_name, old_name,
     packet_send_cnt, 
     packet_recv_cnt);
 }
