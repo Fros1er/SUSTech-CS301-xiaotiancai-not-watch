@@ -4,7 +4,7 @@ Balculator *Balculator::_instance;
 
 void balc_answer_cb(const char *msg) {
     if (Balculator::instance()) {
-        lv_label_set_text(Balculator::instance()->label, std::string(lv_label_get_text(Balculator::instance()->label)) + std::string(msg));
+        lv_label_set_text(Balculator::instance()->label, (std::string(lv_label_get_text(Balculator::instance()->label)) + std::string(msg)).c_str());
     }
 }
 

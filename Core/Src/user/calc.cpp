@@ -4,7 +4,7 @@ Calculator *Calculator::_instance;
 
 void calc_answer_cb(const char *msg) {
     if (Calculator::instance()) {
-        lv_label_set_text(Calculator::instance()->label, std::string(lv_label_get_text(Calculator::instance()->label)) + std::string(msg));
+        lv_label_set_text(Calculator::instance()->label, (std::string(lv_label_get_text(Calculator::instance()->label)) + std::string(msg)).c_str());
     }
 }
 
